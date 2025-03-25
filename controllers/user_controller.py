@@ -38,5 +38,12 @@ def update_user(db:Session, user_id:int, request:UserBase):
         DbUser.licence_date : request.licence_date
     })
      db.commit()
-     return user_id
+     return user.first()
+
+def delete_user(db:Session, user_id:int):
+    user = db.query(DbUser).filter(DbUser.user_id == user_id).first()
+    db.delete(user)
+    db.commit()
+    return "deleted"
+#add exemption handling
      
