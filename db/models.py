@@ -1,6 +1,8 @@
 #from sqlalchemy.sql.sqltypes import Integer, String, Date, Boolean, TIMESTAMP, Float, DateTime
 from db.database import Base
 from sqlalchemy import Column, Integer, String, Date, Boolean, TIMESTAMP, Float, DateTime
+from sqlalchemy.sql.schema import ForeignKey
+from sqlalchemy.orm import relationship
 
 
 class DbUser(Base) :
@@ -13,6 +15,7 @@ class DbUser(Base) :
     is_renter = Column(Boolean, default=False)
     licence_type = Column(String)
     licence_date = Column(String)
+    items=relationship("db_vehicle", back_populates="user")
    # created_at = Column(TIMESTAMP)
    
 
@@ -29,6 +32,8 @@ class db_vehicle(Base) :
     room_size = Column(Float)
     is_automatic = Column(Boolean, nullable=False)
     include_listing = Column(Boolean, default=True)
+    owner_id = Column(Integer, ForeignKey("users.user_id"))
+    user = relationship("db_user", back_populates="vehicles")
     # !!! user_id add relation!!!!!!!!!!!!!!
 
 class db_vehicle_property(Base) :
