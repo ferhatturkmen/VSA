@@ -25,11 +25,11 @@ def get_all_users(db: Session):
 
 
 def get_user(db:Session, user_id:int):
-    user = db.query(DbUser).filter(DbUser.user_id == user_id).first()
-    if not user:
+    req_user = db.query(DbUser).filter(DbUser.user_id == user_id).first()
+    if not req_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
         detail=f'Requested user with id {user_id} is not found')
-    return user
+    return req_user
     
 
 def update_user(db:Session, user_id:int, request:UserBase):
@@ -58,5 +58,5 @@ def delete_user(db:Session, user_id:int):
         db.delete(req_user)
         db.commit()
     return f"User with id {user_id} is deleted"
-#add exemption handling
+
      

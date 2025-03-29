@@ -25,6 +25,8 @@ class VehicleDisplay(BaseModel):
     is_commercial: bool  
     room_size: float
     is_automatic: bool
+    include_listing: bool
+    owner_id: int
     class Config():
         from_attributes = True
 
