@@ -2,6 +2,7 @@ from sqlalchemy.orm.session import Session
 from schemas.user_schema import UserBase
 from db.models import DbUser
 from db.hash import Hash
+from fastapi import HTTPException, status
 
 
 def create_user (db:Session, request: UserBase ): 
@@ -24,26 +25,38 @@ def get_all_users(db: Session):
 
 
 def get_user(db:Session, user_id:int):
-     return db.query(DbUser).filter(DbUser.user_id == user_id).first()
+    user = db.query(DbUser).filter(DbUser.user_id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+        detail=f'Requested user with id {user_id} is not found')
+    return user
+    
 
 def update_user(db:Session, user_id:int, request:UserBase):
-     user= db.query(DbUser).filter(DbUser.user_id == user_id)
-     user.update({
-        DbUser.user_name: request.user_name,
-        DbUser.user_surname:request.user_surname,
-        DbUser.e_mail :request.e_mail,
-        DbUser.password :Hash.bcrypt(request.password),
-        DbUser.is_renter : request.is_renter,
-        DbUser.licence_type : request.licence_type,
-        DbUser.licence_date : request.licence_date
-    })
+     req_user= db.query(DbUser).filter(DbUser.user_id == user_id).first()
+     if not req_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+        detail=f'Requested user with id {user_id} is not found')
+     else:
+        req_user.user_name = request.user_name
+        req_user.user_surname = request.user_surname
+        req_user.e_mail = request.e_mail
+        req_user.password = Hash.bcrypt(request.password)
+        req_user.is_renter = request.is_renter
+        req_user.licence_type = request.licence_type
+        req_user.licence_date = request.licence_date    
      db.commit()
-     return user.first()
+     db.refresh(req_user)
+     return req_user
 
 def delete_user(db:Session, user_id:int):
-    user = db.query(DbUser).filter(DbUser.user_id == user_id).first()
-    db.delete(user)
-    db.commit()
-    return "deleted"
+    req_user = db.query(DbUser).filter(DbUser.user_id == user_id).first()
+    if not req_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+        detail=f'Requested user with id {user_id} is not found')
+    else:
+        db.delete(req_user)
+        db.commit()
+    return f"User with id {user_id} is deleted"
 #add exemption handling
      

@@ -26,12 +26,12 @@ def get_user(user_id:int, db:Session=Depends(get_db)):
     return user_controller.get_user(db, user_id)
 
 #update a user by id 
-@router.post("/{user_id}/update", response_model=UserDisplay)
+@router.put("/{user_id}/update", response_model=UserDisplay)
 def update_user(user_id:int, request:UserBase, db:Session=Depends(get_db)):
     return user_controller.update_user(db, user_id, request)
 
 #delete a user by id 
-@router.get("/{user_id}/delete")
+@router.delete("/{user_id}/delete")
 def delete(user_id:int, db:Session=Depends(get_db)):
     return user_controller.delete_user(db, user_id)
 

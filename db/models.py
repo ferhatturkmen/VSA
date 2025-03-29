@@ -15,7 +15,10 @@ class DbUser(Base) :
     is_renter = Column(Boolean, default=False)
     licence_type = Column(String)
     licence_date = Column(String)
-    items=relationship("db_vehicle", back_populates="user")
+    owned_vehicles= relationship("db_vehicle", back_populates="owner")
+    rented_bookings = relationship("db_booking", foreign_keys="[db_booking.renter_id]", back_populates="renter")
+    
+    
    # created_at = Column(TIMESTAMP)
    
 
@@ -25,7 +28,7 @@ class db_vehicle(Base) :
     plate = Column(String, unique=True, nullable=False)
     brand = Column(String, nullable=False)
     model = Column(String, nullable=False)
-    year = Column(Date, nullable=False)
+    year = Column(String, nullable=False)
     fuel_type = Column(String, nullable=False)
     total_person = Column(Integer)
     is_commercial = Column(Boolean)
@@ -33,8 +36,13 @@ class db_vehicle(Base) :
     is_automatic = Column(Boolean, nullable=False)
     include_listing = Column(Boolean, default=True)
     owner_id = Column(Integer, ForeignKey("users.user_id"))
-    user = relationship("db_user", back_populates="vehicles")
-    # !!! user_id add relation!!!!!!!!!!!!!!
+    owner = relationship("DbUser", back_populates="owned_vehicles")
+    vehicle_properties = relationship("db_vehicle_property", back_populates="properties")
+    vehicle_rentings = relationship("db_booking", foreign_keys="[db_booking.rented_vehicle_id]", back_populates="rented_vehicle")
+   
+    
+
+        # !!! user_id add relation!!!!!!!!!!!!!!
 
 class db_vehicle_property(Base) :
     __tablename__ = "vehicle_properties"
@@ -42,6 +50,11 @@ class db_vehicle_property(Base) :
     daily_rate = Column(Float, nullable=False)
     location = Column(String, nullable=False, index=True)
     unavailable_dates = Column(String)
+    vehicle_id = Column(Integer, ForeignKey("vehicles.vehicle_id")) 
+    properties = relationship("db_vehicle", back_populates="vehicle_properties")  
+    
+
+    
     # !!!!! vehicle id add relation !!!!!!!
 
 class db_booking(Base) :
@@ -57,7 +70,13 @@ class db_booking(Base) :
     approved_at = Column(TIMESTAMP)
     is_cancelled = Column(Boolean, nullable=True)
     cancelled_at = Column(TIMESTAMP, nullable=True)
-    cancellation_type = Column(String, nullable=True)    
+    cancellation_type = Column(String, nullable=True) 
+    renter_id = Column(Integer, ForeignKey("users.user_id"))
+    rented_vehicle_id = Column(Integer, ForeignKey("vehicles.vehicle_id")) 
+    renter = relationship("DbUser", back_populates="rented_bookings")
+    rented_vehicle= relationship("db_vehicle", back_populates="vehicle_rentings")
+   
+    
     # !!! user_id renter add relation !!!!!!
     # !!!! user_id owner add relation !!!!!!!
     # !!!! vehicle_id add relation !!!!!
