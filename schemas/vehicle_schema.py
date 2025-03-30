@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional , List
 
 class VehicleBase(BaseModel):
     plate: str
@@ -14,6 +14,11 @@ class VehicleBase(BaseModel):
     include_listing: bool
     owner_id: int
 
+class VehicleImageDisplay(BaseModel):
+    image_url: str
+    class Config():
+        from_attributes = True
+
 
 class VehicleDisplay(BaseModel):
     plate: str
@@ -27,8 +32,10 @@ class VehicleDisplay(BaseModel):
     is_automatic: bool
     include_listing: bool
     owner_id: int
+    vehicle_images: List[VehicleImageDisplay] = []
     class Config():
         from_attributes = True
+
 
    
 
