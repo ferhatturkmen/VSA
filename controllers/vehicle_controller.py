@@ -1,6 +1,7 @@
 from sqlalchemy.orm.session import Session
 from schemas.vehicle_schema import VehicleBase
 from db.models import db_vehicle
+from fastapi import HTTPException, status
 
 def create_vehicle (db:Session, request: VehicleBase ): 
     new_vehicle = db_vehicle(
@@ -29,32 +30,44 @@ def get_all_vehicles(db: Session):
 
 
 def get_vehicle(db:Session, vehicle_id:int):
-     return db.query(db_vehicle).filter(db_vehicle.vehicle_id == vehicle_id).first()
+      req_vehicle = db.query(db_vehicle).filter(db_vehicle.vehicle_id == vehicle_id).first()
+      if not req_vehicle:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+        detail=f'Requested vehicle with id {vehicle_id} is not found')
+      return req_vehicle
+
 
 def update_vehicle(db:Session, vehicle_id:int, request:VehicleBase):
-     vehicle= db.query(db_vehicle).filter(db_vehicle.vehicle_id == vehicle_id)
-     vehicle.update({
-          db_vehicle.plate: request.plate, 
-          db_vehicle.brand:request.brand, 
-          db_vehicle.model :request.model,          
-          db_vehicle.year : request.year, 
-          db_vehicle.fuel_type : request.fuel_type, 
-          db_vehicle.total_person : request.total_person, 
-          db_vehicle.is_commercial : request.is_commercial, 
-          db_vehicle.room_size : request.room_size, 
-          db_vehicle.is_automatic : request.is_automatic, 
-          db_vehicle.include_listing : request.include_listing, 
-          db_vehicle.owner_id : request.owner_id
-          })
+     req_vehicle= db.query(db_vehicle).filter(db_vehicle.vehicle_id == vehicle_id).first()
+     if not req_vehicle:  
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f'Requested vehicle with id {vehicle_id} is not found')
+     else:
+         req_vehicle.vehicle_id = vehicle_id
+         req_vehicle.plate = request.plate
+         req_vehicle.brand = request.brand
+         req_vehicle.model = request.model
+         req_vehicle.year = request.year
+         req_vehicle.fuel_type = request.fuel_type
+         req_vehicle.total_person = request.total_person
+         req_vehicle.is_commercial = request.is_commercial
+         req_vehicle.room_size = request.room_size
+         req_vehicle.is_automatic = request.is_automatic
+         req_vehicle.include_listing = request.include_listing
+         req_vehicle.owner_id = request.owner_id
      db.commit()
-     return vehicle.first()
+     db.refresh(req_vehicle)
+     return req_vehicle
 
 def delete_vehicle(db:Session, vehicle_id:int):
-    vehicle = db.query(db_vehicle).filter(db_vehicle.vehicle_id == vehicle_id).first()
-    db.delete(vehicle)
+    req_vehicle = db.query(db_vehicle).filter(db_vehicle.vehicle_id == vehicle_id).first()
+    if not req_vehicle:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Requested vehicle with id {vehicle_id } is not found")
+    db.delete(req_vehicle)
     db.commit()
-    return "deleted"
-#add exemption handling
+    return f"Requested vehicle with id {vehicle_id} is deleted"
+
 
 
 
