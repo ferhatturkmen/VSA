@@ -6,6 +6,10 @@ from fastapi import HTTPException, status
 
 
 def create_user (db:Session, request: UserBase ): 
+    existing_user = db.query(DbUser).filter(DbUser.e_mail == request.e_mail).first()
+    if existing_user:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=f"A user with the email address {request.e_mail} already exists.")
     new_user = DbUser(
         user_name = request.user_name,
         user_surname = request.user_surname,

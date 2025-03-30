@@ -106,7 +106,7 @@ def delete_image(db: Session, vehicle_id:int):
                           detail=f"Vehicle with id {vehicle_id} not found")
   db.delete(image_to_delete)
   db.commit()
-  return 'Image deleted successfully!'
+  return "Image deleted successfully!"
 
 
 

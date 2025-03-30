@@ -31,6 +31,8 @@ class db_vehicle(Base) :
     is_commercial = Column(Boolean)
     room_size = Column(Float)
     is_automatic = Column(Boolean, nullable=False)
+    navigation = Column(Boolean, default=False)
+    air_condition = Column(Boolean, default=False)
     include_listing = Column(Boolean, default=True)
     owner_id = Column(Integer, ForeignKey("users.user_id"))
     owner = relationship("DbUser", back_populates="owned_vehicles")

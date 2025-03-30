@@ -11,6 +11,8 @@ class VehicleBase(BaseModel):
     is_commercial: bool
     room_size: float
     is_automatic: bool
+    navigation: bool
+    air_condition: bool
     include_listing: bool
     owner_id: int
 
@@ -30,6 +32,8 @@ class VehicleDisplay(BaseModel):
     is_commercial: bool  
     room_size: float
     is_automatic: bool
+    navigation: bool
+    air_condition: bool
     include_listing: bool
     owner_id: int
     vehicle_images: List[VehicleImageDisplay] = []
