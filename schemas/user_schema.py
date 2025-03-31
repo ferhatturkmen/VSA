@@ -1,5 +1,6 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
+from schemas.vehicle_schema import VehicleDisplay
 
 class UserBase(BaseModel):
     user_name: str
@@ -18,6 +19,7 @@ class UserDisplay(BaseModel):
     is_renter:Optional[bool]
     licence_type:Optional[str]    
     licence_date:Optional[str]
+    owned_vehicles: List[VehicleDisplay] = []
     class Config():
         from_attributes = True
 

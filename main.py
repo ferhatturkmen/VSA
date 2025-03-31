@@ -4,7 +4,7 @@ from routers import message_router
 from routers import payment_router
 from routers import review_router
 from routers import user_router
-from routers import vehicles_router
+from routers import vehicle_router
 from db import models
 from db.database import engine
 
@@ -16,7 +16,7 @@ app.include_router(message_router.router)
 app.include_router(payment_router.router)
 app.include_router(review_router.router)
 app.include_router(user_router.router)
-app.include_router(vehicles_router.router)
+app.include_router(vehicle_router.router)
 
 models.Base.metadata.create_all(engine)
 
