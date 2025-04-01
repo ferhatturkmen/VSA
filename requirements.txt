@@ -4,7 +4,3 @@ sqlalchemy
 passlib
 bcrypt
 python-multipart
-tkakt
-
-
-eaekmaelkal
