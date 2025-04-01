@@ -1,5 +1,5 @@
 from sqlalchemy.orm.session import Session
-from schemas.user_schema import UserBase
+from schemas.users_schema import UserBase
 from db.models import DbUser
 from db.hash import Hash
 from fastapi import HTTPException, status

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional, List
-from schemas.vehicle_schema import VehicleDisplay
+from schemas.vehicles_schema import VehicleDisplay
 
 class UserBase(BaseModel):
     user_name: str
