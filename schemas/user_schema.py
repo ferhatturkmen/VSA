@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 from schemas.vehicle_schema import VehicleDisplay
 
@@ -15,7 +15,7 @@ class UserBase(BaseModel):
 class UserDisplay(BaseModel):
     user_name:str
     user_surname:str
-    e_mail:str
+    e_mail:EmailStr
     is_renter:Optional[bool]
     licence_type:Optional[str]    
     licence_date:Optional[str]
