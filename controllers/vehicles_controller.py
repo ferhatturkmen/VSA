@@ -1,5 +1,5 @@
 from sqlalchemy.orm.session import Session
-from schemas.vehicle_schema import VehicleBase
+from schemas.vehicles_schema import VehicleBase
 from db.models import db_vehicle, db_vehicle_image
 from fastapi import HTTPException, status
 import os
