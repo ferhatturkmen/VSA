@@ -1,5 +1,6 @@
 # Virtual environment folders/
 fastapi-env/
+vsa_env/
  
 # Python cache files
 __pycache__/
