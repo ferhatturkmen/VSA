@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional , List
+from schemas.files_schema import VehicleImageDisplay
 
 class VehicleBase(BaseModel):
     plate: str
@@ -16,10 +17,7 @@ class VehicleBase(BaseModel):
     include_listing: bool
     owner_id: int
 
-class VehicleImageDisplay(BaseModel):
-    image_url: str
-    class Config():
-        from_attributes = True
+
 
 
 class VehicleDisplay(BaseModel):
