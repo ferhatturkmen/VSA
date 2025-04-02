@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, File, UploadFile
-from schemas.vehicles_schema import VehicleBase, VehicleDisplay
+from schemas.vehicles_schema import VehicleBase, VehicleDisplay, VehicleImageDisplay
 from sqlalchemy.orm import Session
 from db.database import get_db
 from controllers import vehicles_controller
@@ -42,7 +42,13 @@ def upload_image(vehicle_id:int, files: List[UploadFile] = File(...), db: Sessio
      image_paths = vehicles_controller.upload_image (db, vehicle_id, files)
      return {"image_paths": image_paths}
 
+
+@router.get("/{vehicle_id}/images", response_model=List[VehicleImageDisplay])
+def get_images(image_id:int, db:Session=Depends(get_db)):
+    return vehicles_controller.get_images_by_car(db, image_id)
+
+
 #delete vehicle image
 @router.delete("/{vehicle_id}/delete_image", tags=["images"])
-def delete_image(vehicle_id:int, db: Session = Depends(get_db)):
-  return vehicles_controller.delete_image(db, vehicle_id)
+def delete_image(image_id:int, db: Session = Depends(get_db)):
+  return vehicles_controller.delete_image(db, image_id)

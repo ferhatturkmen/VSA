@@ -17,7 +17,12 @@ class VehicleBase(BaseModel):
     owner_id: int
 
 class VehicleImageDisplay(BaseModel):
-    image_url: str
+    image_id: int
+    filename: Optional[str]
+    image_url: Optional[str]
+    vehicle_id: Optional[int] #don't forget to delete Optional
+   
+
     class Config():
         from_attributes = True
 
