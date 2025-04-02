@@ -52,6 +52,7 @@ class db_vehicle_property(Base) :
 class db_vehicle_image(Base) :
     __tablename__ = "vehicle_images"
     image_id =Column(Integer, primary_key=True, index=True)
+    filename = Column (String, nullable=True)
     image_url = Column(String, nullable=False)
     vehicle_id = Column(Integer, ForeignKey("vehicles.vehicle_id")) 
     images = relationship("db_vehicle", back_populates="vehicle_images")
