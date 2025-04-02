@@ -23,5 +23,5 @@ models.Base.metadata.create_all(engine)
 
 @app.get ("/")
 def example() :
-    return {"example" : "example data"}
+    return {"example" : "Welcome to the Vehicle Sharing Application"}
 
