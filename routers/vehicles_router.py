@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, File, UploadFile
+from fastapi import APIRouter, Depends
 from schemas.vehicles_schema import VehicleBase, VehicleDisplay, VehicleImageDisplay
 from sqlalchemy.orm import Session
 from db.database import get_db
@@ -35,5 +35,4 @@ def update_vehicle(vehicle_id:int, request:VehicleBase, db:Session=Depends(get_d
 @router.delete("/{vehicle_id}/delete")
 def delete_vehicle(vehicle_id:int, db:Session=Depends(get_db)):
     return vehicles_controller.delete_vehicle(db, vehicle_id)
-
 

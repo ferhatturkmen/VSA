@@ -71,5 +71,47 @@ def delete_vehicle(db:Session, vehicle_id:int):
     return f"Requested vehicle with id {vehicle_id} is deleted"
 
 
+# Upload image to the vehicle
+UPLOAD_FOLDER = r".\img" 
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def upload_image(db: Session, vehicle_id: int, files: list):
+    req_vehicle = db.query(db_vehicle).filter(db_vehicle.vehicle_id == vehicle_id).first()
+    if not req_vehicle:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
+                            detail=f"Vehicle with id {vehicle_id} not found")
+    
+    image_paths = []   
+    for file in files:        
+        if not os.path.exists(UPLOAD_FOLDER):
+            os.makedirs(UPLOAD_FOLDER)
+        
+        file_location = os.path.join(UPLOAD_FOLDER, file.filename)
+        with open(file_location, "wb") as f:
+            f.write(file.file.read())
+        
+        add_image = db_vehicle_image(vehicle_id=vehicle_id, image_url=file_location)
+        db.add(add_image)
+        db.commit()
+        db.refresh(add_image)
+        image_paths.append(file_location)
+
+        return "Image uploaded successfully!"
+    
+#delete image from a vehicle
+
+def delete_image(db: Session, vehicle_id:int):
+  image_to_delete = db.query(db_vehicle_image).filter(db_vehicle_image.vehicle_id == vehicle_id).first()
+  if not image_to_delete:
+      raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                          detail=f"Vehicle with id {vehicle_id} not found")
+  db.delete(image_to_delete)
+  db.commit()
+  return "Image deleted successfully!"
+
+
+
+
+
 
 
