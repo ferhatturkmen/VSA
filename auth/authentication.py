@@ -8,10 +8,10 @@ from db.hash import Hash
 from auth import oauth2
 
 router = APIRouter(
-    tags=["authentication"]
+    tags=["Authentication"]
 )
 
-router.post("/token")
+@router.post("/token")
 def get_token(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     req_user = db.query(models.DbUser).filter(models.DbUser.e_mail == request.username).first()
     if not req_user:
