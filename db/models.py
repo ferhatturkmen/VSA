@@ -62,7 +62,7 @@ class db_booking(Base) :
     booking_id =Column(Integer, primary_key=True, index=True)
     booking_date = Column(DateTime, nullable=False)
     total_days = Column(Integer)
-    created_at = Column(TIMESTAMP)
+    created_at = Column(TIMESTAMP, server_default=func.now())
     approved_at = Column(TIMESTAMP)
     is_delivered_up = Column(Boolean, default = False)
     damage_report = Column(String)
@@ -87,6 +87,15 @@ class db_payment(Base) :
     deposit_back_at = Column(TIMESTAMP)
     #booking_id add relation!!!!!
     # is_approved add relation !!!!
+
+
+class db_review(Base) :
+__tablename__ = "reviews"
+review_id : Column(Integer, primary_key=True, index=True)
+booking_id = Column(Integer, ForeignKey("bookings.booking_id"), index=True)
+review_type = Column(Enum("renter>owner", "owner>renter", "renter>vehicle", nullable=False))
+review_rating = Column (Integer, nullable=False)
+booking_belongs_to =relationship("db_booking", back_populates="booking_reviews")
 
 
 
