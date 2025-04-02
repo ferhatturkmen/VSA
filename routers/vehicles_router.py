@@ -36,3 +36,5 @@ def update_vehicle(vehicle_id:int, request:VehicleBase, db:Session=Depends(get_d
 def delete_vehicle(vehicle_id:int, db:Session=Depends(get_db)):
     return vehicles_controller.delete_vehicle(db, vehicle_id)
 
+
+

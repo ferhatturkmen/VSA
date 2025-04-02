@@ -73,9 +73,3 @@ def delete_vehicle(db:Session, vehicle_id:int):
 
 
 
-
-
-
-
-
-
