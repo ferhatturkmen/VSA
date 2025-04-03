@@ -34,7 +34,13 @@ def get_user(db:Session, user_id:int):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
         detail=f'Requested user with id {user_id} is not found')
     return req_user
-    
+
+def get_user_by_email(db:Session, e_mail:str ):
+    req_user = db.query(DbUser).filter(DbUser.e_mail == e_mail).first()
+    if not req_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+        detail=f'User with email address {e_mail} is not found')
+    return req_user
 
 def update_user(db:Session, user_id:int, request:UserBase):
      req_user= db.query(DbUser).filter(DbUser.user_id == user_id).first()

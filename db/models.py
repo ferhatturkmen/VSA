@@ -75,6 +75,7 @@ class db_booking(Base) :
     rented_vehicle_id = Column(Integer, ForeignKey("vehicles.vehicle_id")) 
     renter = relationship("DbUser", back_populates="rented_bookings")
     rented_vehicle= relationship("db_vehicle", back_populates="vehicle_rentings")
+    booking_reviews = relationship("db_review", back_populates="booking_belongs_to")
    
     
 class db_payment(Base) :
