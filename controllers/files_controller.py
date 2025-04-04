@@ -20,9 +20,9 @@ def upload_vehicle_images(db: Session, vehicle_id: int, files: list):
         if not os.path.exists(UPLOAD_FOLDER):
             os.makedirs(UPLOAD_FOLDER)
 
-        #sanitized_filename = file.filename.replace(" ", "_")
-        #file_location = os.path.join(UPLOAD_FOLDER, sanitized_filename)
-        file_location = os.path.join(UPLOAD_FOLDER, file.filename)
+        sanitized_filename = file.filename.replace(" ", "_")
+        file_location = os.path.join(UPLOAD_FOLDER, sanitized_filename)
+        #file_location = os.path.join(UPLOAD_FOLDER, file.filename)
         with open(file_location, "wb") as f:
             f.write(file.file.read())
         
