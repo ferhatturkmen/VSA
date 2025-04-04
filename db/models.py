@@ -91,6 +91,7 @@ class db_payment(Base) :
     payment_approved_at = Column(TIMESTAMP)    
     deposit_back_at = Column(TIMESTAMP)
     #booking_id add relation!!!!!
+    booking = relationship("db_booking", back_populates="payment") 
     booking_id = Column(Integer, ForeignKey("bookings.booking_id"))
     
 
