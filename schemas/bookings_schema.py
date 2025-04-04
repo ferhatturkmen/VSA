@@ -13,17 +13,19 @@ class BookingBase(BaseModel):
 class BookingDisplay(BaseModel):
     booking_id: int
     booking_date: datetime
-    start_time: datetime
-    end_time: datetime
     total_days: int
+    created_at: datetime
+    approved_at: Optional[datetime]
+        
+    is_delivered_up: Optional[bool] = None
+    damage_report: Optional[str] = None
+    is_report_approved: Optional[bool] = None
 
     is_cancelled: Optional[bool] = None
     cancelled_at: Optional[datetime] = None
     cancellation_type: Optional[str] = None
 
-    is_delivered_up: Optional[bool] = None
-    damage_report: Optional[str] = None
-    is_report_approved: Optional[bool] = None
+    
     class Config:
         from_attributes = True
     
