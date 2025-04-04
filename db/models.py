@@ -1,9 +1,8 @@
 #from sqlalchemy.sql.sqltypes import Integer, String, Date, Boolean, TIMESTAMP, Float, DateTime
 from db.database import Base
-from sqlalchemy import Column, Integer, String, Date, Boolean, TIMESTAMP, Float, DateTime
+from sqlalchemy import Column, Integer, String, Date, Boolean, TIMESTAMP, Float, DateTime, func, Enum
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.orm import relationship
-
 
 class DbUser(Base) :
     __tablename__ = "users"
@@ -63,7 +62,7 @@ class db_booking(Base) :
     booking_id =Column(Integer, primary_key=True, index=True)
     booking_date = Column(DateTime, nullable=False)
     total_days = Column(Integer)
-    created_at = Column(TIMESTAMP)
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
     approved_at = Column(TIMESTAMP)
     is_delivered_up = Column(Boolean, default = False)
     damage_report = Column(String)
@@ -78,6 +77,8 @@ class db_booking(Base) :
     rented_vehicle= relationship("db_vehicle", back_populates="vehicle_rentings")
     # This booking has one associated payment record.
     payment = relationship("db_payment", uselist=False, back_populates="booking")
+    booking_reviews = relationship("db_review", back_populates="booking_belongs_to")
+   
     
 class db_payment(Base) :
     __tablename__ = "payments" 
@@ -92,6 +93,15 @@ class db_payment(Base) :
     #booking_id add relation!!!!!
     booking_id = Column(Integer, ForeignKey("bookings.booking_id"))
     
+
+
+class db_review(Base) :
+    __tablename__ = "reviews"
+    review_id = Column(Integer, primary_key=True, index=True)
+    booking_id = Column(Integer, ForeignKey("bookings.booking_id"), index=True)
+    review_type = Column(Enum("renter>owner", "owner>renter", "renter>vehicle", nullable=False))
+    review_rating = Column (Integer, nullable=False)
+    booking_belongs_to = relationship("db_booking", back_populates="booking_reviews")
 
 
 
