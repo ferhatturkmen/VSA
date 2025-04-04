@@ -14,6 +14,7 @@ router = APIRouter(
 @router.post("/token")
 def get_token(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     req_user = db.query(models.DbUser).filter(models.DbUser.e_mail == request.username).first()
+    print(vars(req_user))
     if not req_user:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Incorrect username or password")
     if not Hash.verify(req_user.password, request.password):
@@ -21,7 +22,11 @@ def get_token(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depe
     
     access_token = oauth2.create_access_token(data={"sub": req_user.e_mail})
 
-    return {"access_token": access_token, "token_type": "bearer", "user_id": req_user.user_id}
+    return {
+        "access_token": access_token,
+        "token_type": "bearer", 
+        "user_id": req_user.user_id
+        }
     
 
     
