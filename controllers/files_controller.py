@@ -1,27 +1,28 @@
-from sqlalchemy.orm.session import Session
+from sqlalchemy.orm import Session
 from db.models import db_vehicle, db_vehicle_image
 from fastapi import HTTPException, status
 import os
-
-
 
 
 # Upload image to the vehicle
 UPLOAD_FOLDER = r".\img" 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-def upload_image(db: Session, vehicle_id: int, files: list):
+def upload_vehicle_images(db: Session, vehicle_id: int, files: list):
     req_vehicle = db.query(db_vehicle).filter(db_vehicle.vehicle_id == vehicle_id).first()
     if not req_vehicle:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
                             detail=f"Vehicle with id {vehicle_id} not found")
     
     image_paths = []   
-    for file in files:        
+    for file in files:  
+              
         if not os.path.exists(UPLOAD_FOLDER):
             os.makedirs(UPLOAD_FOLDER)
-        
-        file_location = os.path.join(UPLOAD_FOLDER, file.filename)
+
+        sanitized_filename = file.filename.replace(" ", "_")
+        file_location = os.path.join(UPLOAD_FOLDER, sanitized_filename)
+        #file_location = os.path.join(UPLOAD_FOLDER, file.filename)
         with open(file_location, "wb") as f:
             f.write(file.file.read())
         
@@ -32,6 +33,9 @@ def upload_image(db: Session, vehicle_id: int, files: list):
         image_paths.append(file_location)
 
         return "Image uploaded successfully!"
+
+
+
 
 
 

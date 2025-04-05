@@ -6,7 +6,7 @@ class VehicleImageDisplay(BaseModel):
     image_id: int
     filename: Optional[str]
     image_url: Optional[str]
-    vehicle_id: Optional[int] #don't forget to delete Optional
+    vehicle_id: int #don't forget to delete Optional
    
 
     class Config():
