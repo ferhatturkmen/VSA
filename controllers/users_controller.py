@@ -17,7 +17,7 @@ def create_user (db:Session, request: UserBase ):
         password = Hash.bcrypt(request.password),
         is_renter = request.is_renter,
         licence_type = request.licence_type,
-        licence_date = str(request.licence_date)
+        licence_date = str(request.licence_date) # check for change to date format
     )
     db.add(new_user)
     db.commit()
