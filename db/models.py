@@ -56,7 +56,6 @@ class db_vehicle_image(Base) :
     vehicle_id = Column(Integer, ForeignKey("vehicles.vehicle_id")) 
     images = relationship("db_vehicle", back_populates="vehicle_images")
   
-
 class db_booking(Base) :
     __tablename__ = "bookings"
     booking_id =Column(Integer, primary_key=True, index=True)
@@ -79,7 +78,6 @@ class db_booking(Base) :
     payment = relationship("db_payment", uselist=False, back_populates="booking")
     booking_reviews = relationship("db_review", back_populates="booking_belongs_to")
    
-    
 class db_payment(Base) :
     __tablename__ = "payments" 
     payment_id =Column(Integer, primary_key=True, index=True)
@@ -94,8 +92,6 @@ class db_payment(Base) :
     booking = relationship("db_booking", back_populates="payment") 
     booking_id = Column(Integer, ForeignKey("bookings.booking_id"))
     
-
-
 class db_review(Base) :
     __tablename__ = "reviews"
     review_id = Column(Integer, primary_key=True, index=True)
@@ -103,12 +99,3 @@ class db_review(Base) :
     review_type = Column(Enum("renter>owner", "owner>renter", "renter>vehicle", nullable=False))
     review_rating = Column (Integer, nullable=False)
     booking_belongs_to = relationship("db_booking", back_populates="booking_reviews")
-
-
-
-
-
-
-
-
-
