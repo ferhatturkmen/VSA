@@ -3,7 +3,7 @@ from schemas.vehicles_schema import VehicleBase, VehicleDisplay, VehicleImageDis
 from sqlalchemy.orm import Session
 from db.database import get_db
 from controllers import vehicles_controller
-from typing import List
+from typing import List, Optional
 
 router = APIRouter(
     prefix = "/vehicles",
@@ -25,6 +25,12 @@ def get_all_vehicles(db: Session = Depends(get_db)):
 @router.get("/{vehicle_id}", response_model=VehicleDisplay)
 def get_vehicle(vehicle_id:int, db:Session=Depends(get_db)):
     return vehicles_controller.get_vehicle(db, vehicle_id)
+
+#filter vehicles
+@router.get("/filter/{brand}/{fuel_type}/{is_automatic}/{navigation}/{air_condition}")
+def filter_vehicles(brand: Optional[str] = None, fuel_type: Optional[str] = None, is_automatic: Optional[bool] = None, navigation: Optional[bool] = None, air_condition: Optional[bool] = None, db: Session = Depends(get_db)):
+    filtered_vehicles = vehicles_controller.get_filtered_vehicles(db, brand, fuel_type, is_automatic, navigation, air_condition)
+    return filtered_vehicles
 
 #update a vehicle by id 
 @router.put("/{vehicle_id}/update", response_model=VehicleDisplay)
