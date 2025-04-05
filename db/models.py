@@ -82,10 +82,8 @@ class db_payment(Base) :
     __tablename__ = "payments" 
     payment_id =Column(Integer, primary_key=True, index=True)
     payment_amount = Column(Float)
-    deposit_amount = Column(Float)
-    is_pending = Column(Boolean, default=True)
+    status = Column(Enum("pending", "approved", "rejected" "cancelled",), default="pending") 
     payment_approved_at = Column(TIMESTAMP)    
-    deposit_back_at = Column(TIMESTAMP)
     #booking_id add relation!!!!!
     # is_approved add relation !!!!
 
