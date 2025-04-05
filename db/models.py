@@ -75,6 +75,8 @@ class db_booking(Base) :
     rented_vehicle_id = Column(Integer, ForeignKey("vehicles.vehicle_id")) 
     renter = relationship("DbUser", back_populates="rented_bookings")
     rented_vehicle= relationship("db_vehicle", back_populates="vehicle_rentings")
+    # This booking has one associated payment record.
+    payment = relationship("db_payment", uselist=False, back_populates="booking")
     booking_reviews = relationship("db_review", back_populates="booking_belongs_to")
    
     
@@ -84,10 +86,14 @@ class db_payment(Base) :
     payment_amount = Column(Float)
     deposit_amount = Column(Float)
     is_pending = Column(Boolean, default=True)
+    # is_approved add relation !!!!
+    is_approved = Column(Boolean, default=False)
     payment_approved_at = Column(TIMESTAMP)    
     deposit_back_at = Column(TIMESTAMP)
     #booking_id add relation!!!!!
-    # is_approved add relation !!!!
+    booking = relationship("db_booking", back_populates="payment") 
+    booking_id = Column(Integer, ForeignKey("bookings.booking_id"))
+    
 
 
 class db_review(Base) :
