@@ -85,6 +85,7 @@ class db_payment(Base) :
     status = Column(Enum("pending", "approved", "rejected" "cancelled",), default="pending") 
     payment_approved_at = Column(DateTime, nullable=True)        
     booking_id = Column(Integer, ForeignKey("bookings.booking_id"))
+    payment_belongs_to = relationship("db_booking", back_populates="booking_payment")
     
 
 
@@ -94,7 +95,7 @@ class db_review(Base) :
     booking_id = Column(Integer, ForeignKey("bookings.booking_id"), index=True)
     review_type = Column(Enum("renter>owner", "owner>renter", "renter>vehicle", nullable=False))
     review_rating = Column (Integer, nullable=False)
-    booking_belongs_to = relationship("db_booking", back_populates="booking_reviews")
+    review_belongs_to = relationship("db_booking", back_populates="booking_reviews")
 
 
 
