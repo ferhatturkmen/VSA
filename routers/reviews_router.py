@@ -20,6 +20,7 @@ def create_review(request:ReviewBase, db : Session = Depends(get_db)):
 def get_review(vehicle_id:int, db:Session=Depends(get_db)):
     return reviews_controller.get_review(db, vehicle_id)
 
+#read all reviews
 @router.get("/", response_model=List[ReviewDisplay])
 def get_all_reviews(db: Session = Depends(get_db)):
     return reviews_controller.get_all_review(db)
