@@ -20,6 +20,16 @@ class UserQuery(BaseModel):
     is_renter: Optional[bool] = None
     licence_type: Optional[str] = None
     licence_date: Optional[str] = None
+
+
+class UserUpdateQuery(BaseModel):
+    user_name: Optional[str] = None
+    user_surname: Optional[str] = None
+    e_mail: Optional[EmailStr] = None
+    password: Optional[str] = None
+    is_renter: Optional[bool] = None
+    licence_type: Optional[str] = None
+    licence_date: Optional[str] = None
     
 
 class UserDisplay(BaseModel):
