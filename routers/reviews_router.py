@@ -24,3 +24,5 @@ def get_review(vehicle_id:int, db:Session=Depends(get_db)):
 @router.get("/", response_model=List[ReviewDisplay])
 def get_all_reviews(db: Session = Depends(get_db)):
     return reviews_controller.get_all_review(db)
+
+#reviews_router.py
