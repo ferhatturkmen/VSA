@@ -95,7 +95,7 @@ class db_review(Base) :
     booking_id = Column(Integer, ForeignKey("bookings.booking_id"), index=True)
     review_type = Column(Enum("renter>owner", "owner>renter", "renter>vehicle", nullable=False))
     review_rating = Column (Integer, nullable=False)
-    review_belongs_to = relationship("db_booking", back_populates="booking_reviews")
+    review_belongs_to = relationship("db_booking", back_populates="booking_reviews") #db_review
 
 
 
