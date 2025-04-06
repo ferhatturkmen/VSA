@@ -24,3 +24,5 @@ def get_review(db:Session, review_id:int):
   
 def get_all_review(db: Session):
      return db.query(db_review).all()
+   
+#reviews_contrpoller.py
