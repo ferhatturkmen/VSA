@@ -34,4 +34,15 @@ def get_all_reviews(db: Session = Depends(get_db),
 def get_review(review_id:int, db:Session=Depends(get_db)):
     return reviews_controller.get_review(db, review_id)
 
+
+#update a review by id 
+@router.put("/{review_id}/update", response_model=ReviewDisplay)
+def update_review(review_id:int, request:ReviewQuery, db:Session=Depends(get_db)):
+    return reviews_controller.update_review(db, review_id, request)
+
+#delete a review by id 
+@router.delete("/{review_id}/delete")
+def delete_review(review_id:int, db:Session=Depends(get_db)):
+    return reviews_controller.delete_review(db, review_id)
+
 #reviews_router.py

@@ -34,5 +34,33 @@ def get_all_review(db: Session, query_params: Optional[ReviewQuery]):
     if query_params.review_rating:
         req_db_query = req_db_query.filter(db_review.review_rating == query_params.review_rating)
   return req_db_query.all()
-   
+
+def update_review(db:Session, review_id:int, request:ReviewQuery):
+     req_review= db.query(db_review).filter(db_review.review_id== review_id).first()
+     if not req_review:
+        
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+        detail=f'Requested review with id {review_id} is not found')
+     else:
+        if request.booking_id is not None:
+            req_review.booking_id = request.booking_id
+        if request.review_type is not None:
+            req_review.review_type = request.review_type
+        if request.review_rating is not None:
+            req_review.review_rating =request.review_rating 
+     db.commit()
+     db.refresh(req_review)
+     return req_review
+
+def delete_review(db:Session, review_id:int):
+    req_review = db.query(db_review).filter(db_review.review_id == review_id).first()
+    if not req_review:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+        detail=f'Requested review with id {review_id} is not found')
+    else:
+        db.delete(req_review)
+        db.commit()
+    return f"Review with id {review_id} is deleted"
+
+
 #reviews_contrpoller.py
