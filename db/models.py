@@ -60,9 +60,10 @@ class db_booking(Base) :
     __tablename__ = "bookings"
     booking_id =Column(Integer, primary_key=True, index=True)
     booking_date = Column(DateTime, nullable=False)
+    start_time = Column(Date, nullable=False)
+    end_time = Column(Date, nullable=False)
     total_days = Column(Integer)
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
-    approved_at = Column(TIMESTAMP)
     is_delivered_up = Column(Boolean, default = False)
     damage_report = Column(String)
     is_report_approved = Column(Boolean, default=False)

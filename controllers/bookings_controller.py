@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from datetime import datetime
+from datetime import datetime,timezone
 from fastapi import HTTPException, status
 from typing import List
 
@@ -7,14 +7,13 @@ from db.models import db_booking, db_payment, db_vehicle
 from schemas.bookings_schema import BookingBase
 
 
-# ---------------------------------------------------
-# VSA-46: Create Booking
-# ---------------------------------------------------
+# Create Booking
+
 def create_booking(db: Session, request: BookingBase, current_user):
     if request.start_time >= request.end_time:
         raise HTTPException(status_code=400, detail="End time must be after start time")
 
-    if request.start_time <= datetime.utcnow():
+    if request.start_time <= datetime.now(timezone.utc).date():
         raise HTTPException(status_code=400, detail="Start time must be in the future")
 
     vehicle = db.query(db_vehicle).filter(db_vehicle.vehicle_id == request.rented_vehicle_id).first()
@@ -33,13 +32,13 @@ def create_booking(db: Session, request: BookingBase, current_user):
     total_days = (request.end_time - request.start_time).days or 1
 
     booking = db_booking(
-        booking_date=datetime.utcnow(),
+        booking_date=datetime.now(timezone.utc),
         start_time=request.start_time,
         end_time=request.end_time,
         total_days=total_days,
         renter_id=current_user.user_id,
         rented_vehicle_id=request.rented_vehicle_id,
-        created_at=datetime.utcnow()
+        created_at=datetime.now(timezone.utc)
     )
     db.add(booking)
     db.commit()
@@ -58,16 +57,15 @@ def create_booking(db: Session, request: BookingBase, current_user):
     return booking
 
 
-# ---------------------------------------------------
-# VSA-48: View All Bookings
-# ---------------------------------------------------
+# View All Bookings
+
 def get_all_bookings(db: Session, current_user) -> List[db_booking]:
     return db.query(db_booking).filter(db_booking.renter_id == current_user.user_id).all()
 
 
-# ---------------------------------------------------
-# VSA-48: View Single Booking
-# ---------------------------------------------------
+
+# View Single Booking
+
 def get_booking(db: Session, booking_id: int, current_user):
     booking = db.query(db_booking).filter(
         db_booking.booking_id == booking_id,
@@ -80,9 +78,8 @@ def get_booking(db: Session, booking_id: int, current_user):
     return booking
 
 
-# ---------------------------------------------------
-# VSA-47: Update Booking
-# ---------------------------------------------------
+# Update Booking
+
 def update_booking(db: Session, booking_id: int, request: BookingBase, current_user):
     booking = db.query(db_booking).filter(
         db_booking.booking_id == booking_id,
@@ -116,9 +113,9 @@ def update_booking(db: Session, booking_id: int, request: BookingBase, current_u
     return booking
 
 
-# ---------------------------------------------------
+
 # VSA-47: Cancel Booking
-# ---------------------------------------------------
+
 def cancel_booking(db: Session, booking_id: int, current_user):
     booking = db.query(db_booking).filter(
         db_booking.booking_id == booking_id,
