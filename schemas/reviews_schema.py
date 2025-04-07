@@ -15,3 +15,5 @@ class ReviewDisplay(BaseModel):
     
 class Config():
     from_attributes = True
+    
+#reviews_schema.py
