@@ -1,5 +1,5 @@
 from sqlalchemy.orm.session import Session
-from schemas.reviews_schema import ReviewBase
+from schemas.reviews_schema import ReviewBase, ReviewQuery
 from db.models import db_review
 from fastapi import HTTPException, status, Query
 from typing import List, Optional
@@ -22,7 +22,17 @@ def get_review(db:Session, review_id:int):
         detail=f'Requested review with id {review_id} is not found')
       return req_review
   
-def get_all_review(db: Session):
-     return db.query(db_review).all()
+def get_all_review(db: Session, query_params: Optional[ReviewQuery]):
+  req_db_query = db.query(db_review)
+  if query_params:
+    if query_params.review_id:
+      req_db_query = req_db_query.filter(db_review.review_id == query_params.review_id)
+    if query_params.booking_id:
+        req_db_query = req_db_query.filter(db_review.booking_id == query_params.booking_id)
+    if query_params.review_type:
+        req_db_query = req_db_query.filter(db_review.review_type == query_params.review_type)
+    if query_params.review_rating:
+        req_db_query = req_db_query.filter(db_review.review_rating == query_params.review_rating)
+  return req_db_query.all()
    
 #reviews_contrpoller.py
