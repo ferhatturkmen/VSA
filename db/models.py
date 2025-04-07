@@ -62,7 +62,6 @@ class db_booking(Base) :
     booking_date = Column(DateTime, nullable=False)
     total_days = Column(Integer)
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
-    approved_at = Column(TIMESTAMP)
     is_delivered_up = Column(Boolean, default = False)
     damage_report = Column(String)
     is_report_approved = Column(Boolean, default=False)
@@ -81,7 +80,7 @@ class db_booking(Base) :
 class db_payment(Base) :
     __tablename__ = "payments" 
     payment_id =Column(Integer, primary_key=True, index=True)
-    payment_amount = Column(Float)
+    #payment_amount = Column(Float)
     status = Column(Enum("pending", "approved", "rejected" "cancelled",), default="pending") 
     payment_approved_at = Column(DateTime, nullable=True)        
     booking_id = Column(Integer, ForeignKey("bookings.booking_id"))
