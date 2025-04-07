@@ -10,40 +10,26 @@ from schemas.bookings_schema import BookingBase
 # Create Booking
 
 def create_booking(db: Session, request: BookingBase, current_user):
-    if request.start_time >= request.end_time:
-        raise HTTPException(status_code=400, detail="End time must be after start time")
+    # Booking_date as the rental start date
+    start_date = request.booking_date
+    # Calculate end date by adding total_days
+    total_days = request.total_days
+    end_date = start_date + timedelta(days=request.total_days)
 
-    if request.start_time <= datetime.now(timezone.utc).date():
-        raise HTTPException(status_code=400, detail="Start time must be in the future")
-
-    vehicle = db.query(db_vehicle).filter(db_vehicle.vehicle_id == request.rented_vehicle_id).first()
-    if not vehicle:
-        raise HTTPException(status_code=404, detail="Vehicle not found")
-
-    overlap = db.query(db_booking).filter(
-        db_booking.rented_vehicle_id == request.rented_vehicle_id,
-        db_booking.cancelled_at.is_(None),
-        db_booking.end_time > request.start_time,
-        db_booking.start_time < request.end_time
-    ).first()
-    if overlap:
-        raise HTTPException(status_code=409, detail="Vehicle is already booked during this time")
-
-    total_days = (request.end_time - request.start_time).days or 1
-
+    
     booking = db_booking(
-        booking_date=datetime.now(timezone.utc),
-        start_time=request.start_time,
-        end_time=request.end_time,
+        booking_date=start_date,
+        created_at=datetime.now(timezone.utc),  # exact time of booking creation
         total_days=total_days,
         renter_id=current_user.user_id,
         rented_vehicle_id=request.rented_vehicle_id,
-        created_at=datetime.now(timezone.utc)
+        
     )
     db.add(booking)
     db.commit()
     db.refresh(booking)
-
+    
+    
     payment = db_payment(
         booking_id=booking.booking_id,
         payment_amount=0.0,

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import datetime,date,timedelta
 from typing import Optional , List
 
@@ -7,15 +7,15 @@ from schemas.vehicles_schema import VehicleDisplay
 
 class BookingBase(BaseModel):
     rented_vehicle_id: int
-    start_time: date=date.today()
-    end_time: date=date.today()+timedelta(days=1)
+    booking_date: date 
+    total_days: int = 1 
 
 class BookingDisplay(BaseModel):
     booking_id: int
-    booking_date: datetime
+    booking_date: date # When the rental starts
     total_days: int
-    created_at: datetime
-    approved_at: Optional[datetime]
+    created_at: datetime # When the booking was made
+    approved_at: Optional[datetime] = None
         
     is_delivered_up: Optional[bool] = None
     damage_report: Optional[str] = None
