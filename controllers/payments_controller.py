@@ -2,6 +2,7 @@ from sqlalchemy.orm.session import Session
 from schemas.payments_schema import PaymentBase 
 from db.models import db_payment
 from fastapi import HTTPException, status
+from typing import Optional
 
 
 def create_payment_request (db:Session, request: PaymentBase ): 
@@ -16,8 +17,18 @@ def create_payment_request (db:Session, request: PaymentBase ):
     db.refresh(new_payment)
     return new_payment
  
-def get_all_payments(db: Session):
-    return db.query(db_payment).all()
+def get_all_payments(db: Session, query_params: Optional[PaymentBase] ):
+    req_db_query = db.query(db_payment)
+    if query_params:
+        if query_params.payment_amount:
+            req_db_query = req_db_query.filter(db_payment.payment_amount == query_params.payment_amount)
+        if query_params.status:
+            req_db_query = req_db_query.filter(db_payment.status == query_params.status)
+        if query_params.payment_approved_at:
+            req_db_query = req_db_query.filter(db_payment.payment_approved_at == query_params.payment_approved_at)
+        if query_params.booking_id:
+            req_db_query = req_db_query.filter(db_payment.booking_id == query_params.booking_id)
+    return req_db_query.all()
 
 def get_payment(db:Session, payment_id:int):
     req_payment = db.query(db_payment).filter(db_payment.payment_id == payment_id).first()

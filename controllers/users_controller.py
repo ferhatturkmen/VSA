@@ -59,19 +59,26 @@ def get_user_by_email(db:Session, e_mail:str ):
         detail=f'User with email address {e_mail} is not found')
     return req_user
 
-def update_user(db:Session, user_id:int, request:UserBase):
+def update_user(db:Session, user_id:int, request:UserQuery):
      req_user= db.query(DbUser).filter(DbUser.user_id == user_id).first()
      if not req_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
         detail=f'Requested user with id {user_id} is not found')
      else:
-        req_user.user_name = request.user_name
-        req_user.user_surname = request.user_surname
-        req_user.e_mail = request.e_mail
-        req_user.password = Hash.bcrypt(request.password)
-        req_user.is_renter = request.is_renter
-        req_user.licence_type = request.licence_type
-        req_user.licence_date = request.licence_date    
+        if request.user_name is not None:
+            req_user.user_name = request.user_name
+        if request.user_surname is not None:
+            req_user.user_surname = request.user_surname
+        if request.e_mail is not None:
+            req_user.e_mail = request.e_mail
+        if request.password is not None:
+            req_user.password = Hash.bcrypt(request.password)
+        if request.is_renter is not None:
+            req_user.is_renter = request.is_renter
+        if request.licence_type is not None:
+            req_user.licence_type = request.licence_type
+        if request.licence_date is not None:
+            req_user.licence_date = request.licence_date    
      db.commit()
      db.refresh(req_user)
      return req_user
