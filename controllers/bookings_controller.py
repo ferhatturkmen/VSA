@@ -2,8 +2,9 @@ from sqlalchemy.orm import Session
 from datetime import datetime,timezone,timedelta
 from fastapi import HTTPException, status
 from typing import List,Optional
+import json
 
-from db.models import db_booking, db_payment, db_vehicle
+from db.models import db_booking, db_payment, db_vehicle,db_vehicle_property
 from schemas.bookings_schema import BookingBase
 
 
@@ -26,6 +27,17 @@ def create_booking(db: Session, request: BookingBase, current_user):
             detail=f"User {current_user.user_id} has already booked vehicle {request.rented_vehicle_id}."
         ) 
     
+    #  Fetch daily_rate
+    vehicle_property = db.query(db_vehicle_property).filter(
+        db_vehicle_property.vehicle_id == request.rented_vehicle_id
+    ).first()
+
+    if not vehicle_property:
+        raise HTTPException(status_code=404, detail="Vehicle property not found.")
+    
+    # Calculate rental amount
+    rental_amount = total_days * vehicle_property.daily_rate
+    
     booking = db_booking(
         booking_date=start_date,
         created_at=datetime.now(timezone.utc),  # exact time of booking creation
@@ -34,24 +46,40 @@ def create_booking(db: Session, request: BookingBase, current_user):
         rented_vehicle_id=request.rented_vehicle_id,
         
     )
+
     db.add(booking)
     db.commit()
     db.refresh(booking)
+    
+    #Generate list of new booked dates
+    booked_dates = [
+        (start_date + timedelta(days=i)).isoformat()
+        for i in range(total_days)
+    ]
+    
+    # Update unavailable_dates in vehicle_property
+    existing_unavailable = json.loads(vehicle_property.unavailable_dates or "[]")
+    updated_unavailable = list(set(existing_unavailable + booked_dates))
+    vehicle_property.unavailable_dates = json.dumps(updated_unavailable)
+    db.commit()
+    db.refresh(vehicle_property)
+    
+       
+    # Create payment record (initial values)
+    payment = db_payment(
+    booking_id=booking.booking_id,
+    payment_amount=rental_amount,
+    deposit_amount=2*rental_amount,
+    status="pending"
+    )
 
-    # Create payment record (initial values)(Ask it to Ferhat abi)
-    # payment = db_payment(
-    #   booking_id=booking.booking_id,
-    #   payment_amount=0.0,
-    #   deposit_amount=0.0,
-    #   is_pending=True,
-    #   is_approved=False
-    # )
+    db.add(payment)
+    db.commit()
+    db.refresh(payment)
 
-    # db.add(payment)
-    # db.commit()
+    return booking,vehicle_property.unavailable_dates
 
     
-    return booking
 
 
 # View All Bookings

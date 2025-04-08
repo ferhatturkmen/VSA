@@ -6,11 +6,14 @@ from schemas.users_schema import UserDisplay
 from schemas.vehicles_schema import VehicleDisplay
 
 class BookingBase(BaseModel):
+    renter_id: int
     rented_vehicle_id: int
     booking_date: date 
     total_days: int = 1 
 
 class BookingDisplay(BaseModel):
+    renter_id: int
+    rented_vehicle_id: int
     booking_id: int
     booking_date: date # When the rental starts
     total_days: int

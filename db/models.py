@@ -44,7 +44,7 @@ class db_vehicle_property(Base) :
     property_id =Column(Integer, primary_key=True, index=True)
     daily_rate = Column(Float, nullable=False)
     location = Column(String, nullable=False, index=True)
-    unavailable_dates = Column(String)
+    unavailable_dates = Column(String, default="[]")
     vehicle_id = Column(Integer, ForeignKey("vehicles.vehicle_id")) 
     properties = relationship("db_vehicle", back_populates="vehicle_properties")  
 
