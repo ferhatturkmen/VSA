@@ -10,6 +10,13 @@ class VehiclePropertyCreate(BaseModel):
     vehicle_id: int
 
 
+# class VehiclePropertyDisplay(BaseModel):
+#     daily_rate: float
+#     location: str
+#     unavailable_dates: Optional[str] = None
+#     vehicle_id: int
+
+
 
 class VehiclePropertyOut(VehiclePropertyCreate):
     property_id: int
