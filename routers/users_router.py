@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from schemas.users_schema import UserBase, UserDisplay, UserQuery, CurrentUserDisplay
+from schemas.users_schema import UserBase, UserDisplay, UserQuery, UserUpdateQuery
 from sqlalchemy.orm import Session
 from db.database import get_db
 from controllers import users_controller
@@ -35,7 +35,7 @@ def get_user(user_id:int, db:Session=Depends(get_db), token:str = Depends(oauth2
 
 #update a user by id 
 @router.put("/{user_id}/update", response_model=UserDisplay)
-def update_user(user_id:int, request:UserBase, db:Session=Depends(get_db)):
+def update_user(user_id:int, request:UserUpdateQuery, db:Session=Depends(get_db)):
     return users_controller.update_user(db, user_id, request)
 
 #delete a user by id 
