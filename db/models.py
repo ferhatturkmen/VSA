@@ -25,7 +25,7 @@ class db_vehicle(Base) :
     brand = Column(String, nullable=False)
     model = Column(String, nullable=False)
     year = Column(String, nullable=False)
-    fuel_type = Column(String, nullable=False)
+    fuel_type = Column(Enum("Benzine","Diesel", "Electric", "Hybrid", "LPG" ))
     total_person = Column(Integer)
     is_commercial = Column(Boolean)
     room_size = Column(Float)
@@ -80,7 +80,7 @@ class db_booking(Base) :
 class db_payment(Base) :
     __tablename__ = "payments" 
     payment_id =Column(Integer, primary_key=True, index=True)
-    #payment_amount = Column(Float)
+    payment_amount = Column(Float)
     status = Column(Enum("pending", "approved", "rejected" "cancelled",), default="pending") 
     payment_approved_at = Column(DateTime, nullable=True)        
     booking_id = Column(Integer, ForeignKey("bookings.booking_id"))
