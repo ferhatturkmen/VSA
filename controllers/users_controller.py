@@ -3,6 +3,7 @@ from schemas.users_schema import UserBase, UserQuery
 from db.models import DbUser
 from db.hash import Hash
 from fastapi import HTTPException, status
+from fastapi.responses import JSONResponse
 from typing import Optional, List
 
 
@@ -23,7 +24,18 @@ def create_user (db:Session, request: UserBase ):
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    return new_user
+    return JSONResponse(
+        status_code=status.HTTP_201_CREATED,
+        content={
+            "user_id": new_user.user_id,
+            "user_name": new_user.user_name,
+            "user_surname": new_user.user_surname,
+            "e_mail": new_user.e_mail,
+            "is_renter": new_user.is_renter,
+            "licence_type": new_user.licence_type,
+            "licence_date": str(new_user.licence_date) # check for change to date format
+        }
+    )
 
 def get_all_users(db: Session, query_params:  Optional[UserQuery] ):
      req_db_query = db.query(DbUser)

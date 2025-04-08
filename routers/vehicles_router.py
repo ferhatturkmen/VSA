@@ -4,6 +4,8 @@ from sqlalchemy.orm import Session
 from db.database import get_db
 from controllers import vehicles_controller
 from typing import List, Optional
+from schemas.users_schema import UserBase
+from auth.oauth2 import get_current_user
 
 router = APIRouter(
     prefix = "/vehicles",
@@ -41,8 +43,8 @@ def filter_vehicles(brand: Optional[str] = None, fuel_type: Optional[str] = None
 
 #update a vehicle by id                     #request changed to VehicleQuery 
 @router.put("/{vehicle_id}/update", response_model=VehicleDisplay)
-def update_vehicle(vehicle_id:int, request:VehicleQuery, db:Session=Depends(get_db)):
-    return vehicles_controller.update_vehicle(db, vehicle_id, request)
+def update_vehicle(vehicle_id:int, request:VehicleQuery, db:Session=Depends(get_db), current_user:UserBase = Depends(get_current_user)):
+    return vehicles_controller.update_vehicle(db, vehicle_id, request, current_user)
 
 #delete a vehicle by id 
 @router.delete("/{vehicle_id}/delete")

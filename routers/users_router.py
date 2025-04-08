@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from schemas.users_schema import UserBase, UserDisplay, UserQuery, UserUpdateQuery
 from sqlalchemy.orm import Session
 from db.database import get_db
@@ -6,6 +6,7 @@ from controllers import users_controller
 from typing import List
 from auth.oauth2 import oauth2_schema
 from auth.oauth2 import get_current_user
+from utils.user import check_user
 
 router = APIRouter(
     prefix = "/users",
@@ -30,7 +31,8 @@ def get_all_users(db: Session = Depends(get_db),
 
 #read user by id 
 @router.get("/{user_id}", response_model=UserDisplay)
-def get_user(user_id:int, db:Session=Depends(get_db), token:str = Depends(oauth2_schema)):
+def get_user(user_id:int, db:Session=Depends(get_db), current_user:UserBase = Depends(get_current_user)):
+    check_user(user_id, current_user)
     return users_controller.get_user(db, user_id)
 
 #update a user by id 
