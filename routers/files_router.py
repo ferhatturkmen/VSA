@@ -11,20 +11,21 @@ router = APIRouter(
 )
 
 
+#get images by vehicle id
+@router.get("/{vehicle_id}/images", response_model=List[VehicleImageDisplay])
+def getting_vehicle_images(vehicle_id:int, db:Session=Depends(get_db)):
+    return files_controller.get_images_by_car(db, vehicle_id)
+
+
 #add vehicle image
 @router.post("/{vehicle_id}/upload_images")
-def upload_vehicle_images(vehicle_id:int, files: List[UploadFile] = File(...), db: Session = Depends(get_db)):
+def uploading_vehicle_images(vehicle_id:int, files: List[UploadFile] = File(...), db: Session = Depends(get_db)):
      image_paths = files_controller.upload_vehicle_images (db, vehicle_id, files)
      return {"image_paths": image_paths}
 
 
-#get images by vehicle id
-@router.get("/{vehicle_id}/images", response_model=List[VehicleImageDisplay])
-def get_vehicle_images(vehicle_id:int, db:Session=Depends(get_db)):
-    return files_controller.get_images_by_car(db, vehicle_id)
-
 
 #delete vehicle image
 @router.delete("/{vehicle_id}/delete_images")
-def delete_vehicle_image(image_id:int, db: Session = Depends(get_db)):
+def deleting_vehicle_image(image_id:int, db: Session = Depends(get_db)):
   return files_controller.delete_image(db, image_id)

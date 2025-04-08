@@ -1,8 +1,9 @@
 from sqlalchemy.orm.session import Session
-from schemas.users_schema import UserBase
+from schemas.users_schema import UserBase, UserQuery
 from db.models import DbUser
 from db.hash import Hash
 from fastapi import HTTPException, status
+from typing import Optional, List
 
 
 def create_user (db:Session, request: UserBase ): 
@@ -17,15 +18,31 @@ def create_user (db:Session, request: UserBase ):
         password = Hash.bcrypt(request.password),
         is_renter = request.is_renter,
         licence_type = request.licence_type,
-        licence_date = str(request.licence_date)
+        licence_date = str(request.licence_date) # check for change to date format
     )
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
     return new_user
 
-def get_all_users(db: Session):
-     return db.query(DbUser).all()
+def get_all_users(db: Session, query_params:  Optional[UserQuery] ):
+     req_db_query = db.query(DbUser)
+     if query_params:
+            if query_params.user_name:
+                req_db_query = req_db_query.filter(DbUser.user_name == query_params.user_name)
+            if query_params.user_surname:
+                req_db_query = req_db_query.filter(DbUser.user_surname == query_params.user_surname)
+            if query_params.e_mail:
+                req_db_query = req_db_query.filter(DbUser.e_mail == query_params.e_mail)
+            if query_params.is_renter is not None:
+                req_db_query = req_db_query.filter(DbUser.is_renter == query_params.is_renter)
+            if query_params.licence_type:
+                req_db_query = req_db_query.filter(DbUser.licence_type == query_params.licence_type)
+            if query_params.licence_date:
+                req_db_query = req_db_query.filter(DbUser.licence_date == query_params.licence_date)
+
+     return req_db_query.all()
+
 
 
 def get_user(db:Session, user_id:int):

@@ -1,8 +1,8 @@
 from sqlalchemy.orm.session import Session
 from schemas.vehicles_schema import VehicleBase
 from db.models import db_vehicle
-from fastapi import HTTPException, status
-
+from fastapi import HTTPException, status, Query
+from typing import List, Optional
 
 
 def create_vehicle (db:Session, request: VehicleBase ): 
@@ -38,6 +38,28 @@ def get_vehicle(db:Session, vehicle_id:int):
         detail=f'Requested vehicle with id {vehicle_id} is not found')
       return req_vehicle
 
+def get_filtered_vehicles(
+    db: Session,
+    brand: Optional[str] = Query(None),
+    fuel_type: Optional[str] = Query(None),
+    is_automatic: Optional[bool] = Query(None),
+    navigation: Optional[bool] = Query(None),
+    air_condition: Optional[bool] = Query(None),
+):
+    query = db.query(db_vehicle)
+
+    if brand:
+        query = query.filter(db_vehicle.brand == brand)
+    if fuel_type:
+        query = query.filter(db_vehicle.fuel_type == fuel_type)
+    if is_automatic is not None:
+        query = query.filter(db_vehicle.is_automatic == is_automatic)
+    if navigation is not None:
+        query = query.filter(db_vehicle.navigation == navigation)
+    if air_condition is not None:
+        query = query.filter(db_vehicle.air_condition == air_condition)
+
+    return query.all()
 
 def update_vehicle(db:Session, vehicle_id:int, request:VehicleBase):
      req_vehicle= db.query(db_vehicle).filter(db_vehicle.vehicle_id == vehicle_id).first()
