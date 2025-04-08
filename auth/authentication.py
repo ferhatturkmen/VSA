@@ -8,7 +8,7 @@ from db.hash import Hash
 from auth import oauth2
 
 router = APIRouter(
-    tags=["Authentication"]
+    tags=["authentication"]
 )
 
 @router.post("/token")
