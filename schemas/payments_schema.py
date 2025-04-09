@@ -16,6 +16,13 @@ class PaymentBase(BaseModel):
     payment_approved_at: Optional[datetime] = None
     booking_id: Optional[int] = None
 
+class PaymentQuery(BaseModel):
+    payment_id: Optional[int] = None
+    payment_amount: Optional[float] = None
+    status: Optional[PaymentStatus] = None
+    payment_approved_at: Optional[datetime] = None
+    booking_id: Optional[int] = None
+
 class PaymentDisplay(BaseModel):
     payment_id:int
     payment_amount:float
