@@ -57,14 +57,6 @@ def get_all_vehicles(db: Session, query_params: Optional[VehicleQuery] ):
     return req_db_query.all()
 
 
-
-
-
-'''def get_all_vehicles(db: Session):
-     return db.query(db_vehicle).all()'''
-
-
-
 def get_vehicle(db:Session, vehicle_id:int):
       req_vehicle = db.query(db_vehicle).filter(db_vehicle.vehicle_id == vehicle_id).first()
       if not req_vehicle:
