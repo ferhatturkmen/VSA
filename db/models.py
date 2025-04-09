@@ -38,15 +38,17 @@ class db_vehicle(Base) :
     owner_id = Column(Integer, ForeignKey("users.user_id"))
     owner = relationship("DbUser", back_populates="owned_vehicles")   
     vehicle_rentings = relationship("db_booking", foreign_keys="[db_booking.rented_vehicle_id]", back_populates="rented_vehicle")
-    vehicle_images = relationship("db_vehicle_image", back_populates="images")
+    vehicle_files = relationship("db_vehicle_files", back_populates="files")
 
-class db_vehicle_image(Base) :
-    __tablename__ = "vehicle_images"
-    image_id =Column(Integer, primary_key=True, index=True)
-    filename = Column (String, nullable=True)
-    image_url = Column(String, nullable=False)
+
+
+class db_vehicle_files(Base) :
+    __tablename__ = "vehicle_files"
+    file_id =Column(Integer, primary_key=True, index=True)
+    #filename = Column (String, nullable=True)
+    file_url = Column(String, nullable=False)
     vehicle_id = Column(Integer, ForeignKey("vehicles.vehicle_id")) 
-    images = relationship("db_vehicle", back_populates="vehicle_images")
+    files = relationship("db_vehicle", back_populates="vehicle_files")
   
 class db_booking(Base) :
     __tablename__ = "bookings"

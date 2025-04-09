@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional , List
-from schemas.files_schema import VehicleImageDisplay
+from schemas.files_schema import VehicleFileDisplay
 from enum import Enum
 
 class VehicleFuelType(str, Enum):
@@ -61,7 +61,7 @@ class VehicleDisplay(BaseModel):
     daily_rate: float
     location: str
     owner_id: int
-    vehicle_images: List[VehicleImageDisplay] = []
+    vehicle_images: List[VehicleFileDisplay] = []
     class Config():
         from_attributes = True
 
