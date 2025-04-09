@@ -3,17 +3,36 @@ from schemas.reviews_schema import ReviewBase, ReviewQuery
 from db.models import db_review
 from fastapi import HTTPException, status, Query
 from typing import List, Optional
+from fastapi.responses import JSONResponse
 
 def create_review(db:Session, request: ReviewBase):
-    new_review = db_review(
-        booking_id=request.booking_id,
-        review_type=request.review_type,
-        review_rating=request.review_rating
-    )
-    db.add(new_review)
-    db.commit()
-    db.refresh(new_review)
-    return new_review
+    try:
+        new_review = db_review(
+            booking_id=request.booking_id,
+            review_type=request.review_type,
+            review_rating=request.review_rating
+        )
+        db.add(new_review)
+        db.commit()
+        db.refresh(new_review)
+        return JSONResponse(
+            status_code=status.HTTP_201_CREATED,
+            content={"message": f"Review with id {new_review.review_id} is created",
+                     "review_id": new_review.review_id,
+                     "booking_id": new_review.booking_id,
+                     "review_type": new_review.review_type,
+                     "review_rating": new_review.review_rating})
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        # Rollback the transaction in case of error
+        db.rollback() 
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Exception occured while creating review"
+        )
+    
+    
 
 def get_review(db:Session, review_id:int):
       req_review = db.query(db_review).filter(db_review.review_id == review_id).first()

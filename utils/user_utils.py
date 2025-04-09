@@ -1,4 +1,4 @@
-from schemas.users_schema import UserBase, CurrentUserDisplay
+from schemas.users_schema import CurrentUserDisplay
 from fastapi import HTTPException, status
 from db.models import db_vehicle, db_booking, db_payment, db_review
 from sqlalchemy.orm import Session

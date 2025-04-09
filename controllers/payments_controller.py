@@ -3,19 +3,36 @@ from schemas.payments_schema import PaymentBase
 from db.models import db_payment
 from fastapi import HTTPException, status
 from typing import Optional
+from fastapi.responses import JSONResponse
 
 
 def create_payment_request (db:Session, request: PaymentBase ): 
-    new_payment = db_payment(
-        payment_amount = request.payment_amount,
-        status = request.status,
-        payment_approved_at = request.payment_approved_at,
-        booking_id = request.booking_id
-    )
-    db.add(new_payment)
-    db.commit()
-    db.refresh(new_payment)
-    return new_payment
+    try:
+        new_payment = db_payment(
+            payment_amount = request.payment_amount,
+            status = request.status,
+            payment_approved_at = request.payment_approved_at,
+            booking_id = request.booking_id
+        )
+        db.add(new_payment)
+        db.commit()
+        db.refresh(new_payment)
+        return JSONResponse(
+            status_code=status.HTTP_201_CREATED,
+            content={"message": f"Payment with id {new_payment.payment_id} is created",
+                     "payment_id": new_payment.payment_id,
+                     "payment_amount": new_payment.payment_amount,
+                     "status": new_payment.status,                     
+                     "booking_id": new_payment.booking_id})
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        # Rollback the transaction in case of error
+        db.rollback() 
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Exception occured while creating payment"
+        )
  
 def get_all_payments(db: Session, query_params: Optional[PaymentBase] ):
     req_db_query = db.query(db_payment)

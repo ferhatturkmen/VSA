@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from schemas.users_schema import UserBase, UserDisplay, UserQuery, UserUpdateQuery
+from schemas.users_schema import UserBase, UserCreate, UserDisplay, UserQuery, UserUpdateQuery
 from sqlalchemy.orm import Session
 from db.database import get_db
 from controllers import users_controller
@@ -15,7 +15,7 @@ router = APIRouter(
 
 #create a new user
 @router.post("/", response_model=UserDisplay)
-def create_user(request:UserBase, 
+def create_user(request: UserCreate, 
                 db: Session = Depends(get_db)):
 
     return users_controller.create_user(db, request)

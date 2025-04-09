@@ -2,36 +2,52 @@ from sqlalchemy.orm import Session
 from datetime import datetime,timezone,timedelta
 from fastapi import HTTPException, status
 from typing import List,Optional
-
 from db.models import db_booking, db_payment, db_vehicle
 from schemas.bookings_schema import BookingBase, BookingQuery
 from schemas.users_schema import CurrentUserDisplay
 import pytz
-
+from fastapi.responses import JSONResponse
 
 # Create Booking
 
 def create_booking(db: Session, 
                    request: BookingBase, 
                    current_user: CurrentUserDisplay):    
-  
-    new_booking = db_booking(
-        rented_vehicle_id=request.rented_vehicle_id,
-        renter_id=current_user.user_id,
-        start_date=request.start_date,
-        end_date=request.end_date,
-        is_delivered_up=False,
-        damage_report="",
-        is_report_approved=False,
-        approved_at=None,
-        is_cancelled=False,
-        cancelled_at=None,
-        created_at=datetime.now(timezone.utc)
+    try:
+        new_booking = db_booking(
+            rented_vehicle_id=request.rented_vehicle_id,
+            renter_id=current_user.user_id,
+            start_date=request.start_date,
+            end_date=request.end_date,
+            is_delivered_up=False,
+            damage_report="",
+            is_report_approved=False,
+            approved_at=None,
+            is_cancelled=False,
+            cancelled_at=None,
+            created_at=datetime.now(timezone.utc)
+            )
+        db.add(new_booking)
+        db.commit()
+        db.refresh(new_booking)    
+        return JSONResponse(
+            status_code=status.HTTP_201_CREATED,
+            content={"message": f"Booking with id {new_booking.booking_id} is created",
+                     "booking_id": new_booking.booking_id,
+                     "start_date": new_booking.start_date,
+                     "rented_vehicle_id": new_booking.rented_vehicle_id,
+                     "renter_id": new_booking.renter_id,}
         )
-    db.add(new_booking)
-    db.commit()
-    db.refresh(new_booking)    
-    return new_booking
+    
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        # Rollback the transaction in case of error
+        db.rollback() 
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Exception occured while creating booking"
+        )
 
 
 # View All Bookings
