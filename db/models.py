@@ -7,13 +7,14 @@ from sqlalchemy.orm import relationship
 class DbUser(Base) :
     __tablename__ = "users"
     user_id = Column(Integer, primary_key = True, index = True)
-    user_name = Column(String)
-    user_surname = Column(String)
+    name = Column(String)
+    surname = Column(String)
     e_mail = Column(String, unique=True, index=True)
     password = Column(String)
-    is_renter = Column(Boolean, default=False)
+    is_owner = Column(Boolean, default=False)
     licence_type = Column(String)
     licence_date = Column(String)
+    is_admin = Column(Boolean, default=False)
     owned_vehicles= relationship("db_vehicle", back_populates="owner")
     rented_bookings = relationship("db_booking", foreign_keys="[db_booking.renter_id]", back_populates="renter")     
 
@@ -27,26 +28,17 @@ class db_vehicle(Base) :
     year = Column(String, nullable=False)
     fuel_type = Column(Enum("Benzine","Diesel", "Electric", "Hybrid", "LPG" ))
     total_person = Column(Integer)
-    is_commercial = Column(Boolean)
-    room_size = Column(Float)
+    is_commercial = Column(Boolean)    
     is_automatic = Column(Boolean, nullable=False)
     navigation = Column(Boolean, default=False)
     air_condition = Column(Boolean, default=False)
     include_listing = Column(Boolean, default=True)
-    owner_id = Column(Integer, ForeignKey("users.user_id"))
-    owner = relationship("DbUser", back_populates="owned_vehicles")
-    vehicle_properties = relationship("db_vehicle_property", back_populates="properties")
-    vehicle_rentings = relationship("db_booking", foreign_keys="[db_booking.rented_vehicle_id]", back_populates="rented_vehicle")
-    vehicle_images = relationship("db_vehicle_image", back_populates="images")
-
-class db_vehicle_property(Base) :
-    __tablename__ = "vehicle_properties"
-    property_id =Column(Integer, primary_key=True, index=True)
     daily_rate = Column(Float, nullable=False)
     location = Column(String, nullable=False, index=True)
-    unavailable_dates = Column(String)
-    vehicle_id = Column(Integer, ForeignKey("vehicles.vehicle_id")) 
-    properties = relationship("db_vehicle", back_populates="vehicle_properties")  
+    owner_id = Column(Integer, ForeignKey("users.user_id"))
+    owner = relationship("DbUser", back_populates="owned_vehicles")   
+    vehicle_rentings = relationship("db_booking", foreign_keys="[db_booking.rented_vehicle_id]", back_populates="rented_vehicle")
+    vehicle_images = relationship("db_vehicle_image", back_populates="images")
 
 class db_vehicle_image(Base) :
     __tablename__ = "vehicle_images"
@@ -91,7 +83,7 @@ class db_review(Base) :
     __tablename__ = "reviews"
     review_id = Column(Integer, primary_key=True, index=True)
     booking_id = Column(Integer, ForeignKey("bookings.booking_id"), index=True)
-    review_type = Column(Enum("renter>owner", "owner>renter", "renter>vehicle", nullable=False))
+    review_type = Column(Enum("renterTOowner", "ownerTOrenter", "renterTOvehicle", nullable=False))
     review_rating = Column (Integer, nullable=False)
     review_belongs_to = relationship("db_booking", back_populates="booking_reviews") #db_review
 

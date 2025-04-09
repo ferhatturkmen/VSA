@@ -3,9 +3,9 @@ from typing import Optional , List
 from enum import Enum
 
 class ReviewType(str, Enum):
-    renter_to_owner = "renter>owner"
-    owner_to_renter = "owner>renter"
-    renter_to_vehicle = "renter>vehicle"
+    renter_to_owner = "renterTOowner"
+    owner_to_renter = "ownerTOrenter"
+    renter_to_vehicle = "renterTOvehicle"
 
 class ReviewBase(BaseModel):
     booking_id: int
