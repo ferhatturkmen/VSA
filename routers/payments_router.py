@@ -7,7 +7,7 @@ from controllers import payments_controller
 from typing import List
 from auth.oauth2 import oauth2_schema
 from auth.oauth2 import get_current_user
-from utils.user_utils import check_payer_reciever
+from utils.user_utils import check_payer_reciever, check_admin
 
 router = APIRouter(
     prefix = "/payments",
@@ -19,7 +19,7 @@ router = APIRouter(
 def create_payment(request:PaymentBase, 
                    current_user:UserBase=Depends(get_current_user),  
                    db: Session = Depends(get_db)):
-    check_payer_reciever(request.booking_id, current_user, db)
+    #check_payer_reciever(request.booking_id, current_user, db)
     return payments_controller.create_payment_request(db, request)
 
 #read all payments
@@ -27,6 +27,7 @@ def create_payment(request:PaymentBase,
 def get_all_payments(db: Session = Depends(get_db), 
                     current_user:UserBase=Depends(get_current_user),
                     query_params: PaymentQuery =  Depends()):
+    check_admin(current_user)
     req_db_query = payments_controller.get_all_payments(db, query_params=query_params)
     return {
         "data": req_db_query ,
@@ -55,6 +56,7 @@ def update_payment(payment_id:int,
 def delete_payment(payment_id:int, 
                    current_user:UserBase=Depends(get_current_user),  
                    db:Session=Depends(get_db)):
+    
     check_payer_reciever(payment_id, current_user, db)
     return payments_controller.delete_payment(db, payment_id)
 

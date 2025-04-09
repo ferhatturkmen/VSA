@@ -50,6 +50,8 @@ class CurrentUserDisplay(BaseModel):
     is_owner:Optional[bool]
     licence_type:Optional[str]    
     licence_date:Optional[str]
+    is_admin:Optional[bool]
+    
    
     
 

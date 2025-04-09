@@ -6,7 +6,7 @@ from controllers import users_controller
 from typing import List
 from auth.oauth2 import oauth2_schema
 from auth.oauth2 import get_current_user
-from utils.user_utils import check_user
+from utils.user_utils import check_user, check_admin
 
 router = APIRouter(
     prefix = "/users",
@@ -25,6 +25,7 @@ def create_user(request:UserBase,
 def get_all_users(db: Session = Depends(get_db), 
                   current_user:UserBase=Depends(get_current_user), 
                   query_params: UserQuery =  Depends()):
+    check_admin(current_user)
     req_db_query = users_controller.get_all_users(db, query_params=query_params)
     return {
         "data": req_db_query,
