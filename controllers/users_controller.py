@@ -132,7 +132,7 @@ def update_user(db:Session, user_id:int, request:UserQuery):
         db.rollback() 
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Exception occured while creating user"
+            detail="Exception occured while updating user"
         )
 
 def delete_user(db:Session, user_id:int):
@@ -144,16 +144,14 @@ def delete_user(db:Session, user_id:int):
         else:
             db.delete(req_user)
             db.commit()
-        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT,
-                            content= f"User with id {user_id} is deleted"
-                )
+        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT)
     
     except HTTPException as e:
         raise e
     except Exception as e:        
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Exception occured while creating user"
+            detail="Exception occured while deleting user"
         )
 
      
