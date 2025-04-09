@@ -16,7 +16,7 @@ router = APIRouter(
 
 #add vehicle's file
 @router.post("/{vehicle_id}/new")
-def upload_file(vehicle_id:int, current_user:UserBase=Depends(get_current_user), files: List[UploadFile] = File(...), db: Session = Depends(get_db)):
+def upload_file(vehicle_id:int, current_user:UserBase=Depends(get_current_user), files: UploadFile = File(...), db: Session = Depends(get_db)):
      
      #file_paths = files_controller.upload_vehicle_file(db, vehicle_id, files)
      #return {"image_paths": file_paths}
