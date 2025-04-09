@@ -34,7 +34,11 @@ def upload_vehicle_file(db: Session, vehicle_id: int, files: list):
         db.refresh(add_file)
         file_paths.append(file_location)
 
-        return "File uploaded successfully!"
+        return JSONResponse(
+          status_code=201,
+          content={"message": "File uploaded successfully!"}
+     )
+       
 
 
 

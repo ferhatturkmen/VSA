@@ -1,4 +1,4 @@
-from fastapi.responses import JSONResponse
+#from fastapi.responses import JSONResponse
 from fastapi import APIRouter, Depends, File,  UploadFile, status
 from schemas.files_schema import VehicleFileDisplay
 from sqlalchemy.orm import Session
@@ -14,11 +14,10 @@ router = APIRouter(
 #add vehicle's file
 @router.post("/{vehicle_id}/new")
 def upload_file(vehicle_id:int, files: List[UploadFile] = File(...), db: Session = Depends(get_db)):
-     file_paths = files_controller.upload_vehicle_file(db, vehicle_id, files)
-     return JSONResponse(
-          status_code=201,
-          content={"file's_paths": file_paths}
-     )
+     
+     #file_paths = files_controller.upload_vehicle_file(db, vehicle_id, files)
+     #return {"image_paths": file_paths}
+     return files_controller.upload_vehicle_file(db, vehicle_id, files)
 
 
 #get files by vehicle id
