@@ -15,7 +15,7 @@ router = APIRouter(
 )
 
 #create a new payment request
-@router.post("/new", response_model=PaymentDisplay)
+@router.post("/", response_model=PaymentDisplay)
 def create_payment(request:PaymentBase, 
                    current_user:UserBase=Depends(get_current_user),  
                    db: Session = Depends(get_db)):
@@ -23,7 +23,7 @@ def create_payment(request:PaymentBase,
     return payments_controller.create_payment_request(db, request)
 
 #read all payments
-@router.get("/all",) 
+@router.get("/",) 
 def get_all_payments(db: Session = Depends(get_db), 
                     current_user:UserBase=Depends(get_current_user),
                     query_params: PaymentQuery =  Depends()):

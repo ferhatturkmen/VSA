@@ -10,8 +10,8 @@ from controllers import bookings_controller
 from utils.user_utils import check_booker, check_admin
 
 router = APIRouter(
-    prefix="/booking",
-    tags=["booking"]
+    prefix="/bookings",
+    tags=["bookings"]
 )
 
 

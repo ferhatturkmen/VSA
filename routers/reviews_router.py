@@ -14,7 +14,7 @@ router = APIRouter(
 )
 
 #create a new review
-@router.post("/new", response_model=ReviewDisplay)
+@router.post("/", response_model=ReviewDisplay)
 def create_review(request:ReviewBase, 
                   current_user:UserBase=Depends(get_current_user), 
                   db: Session = Depends(get_db)):    
@@ -22,7 +22,7 @@ def create_review(request:ReviewBase,
 
 
 #read all reviews
-@router.get("/all",) # response_model=List[ReviewDisplay])
+@router.get("/",) # response_model=List[ReviewDisplay])
 def get_all_reviews(db: Session = Depends(get_db),                    
                     query_params: ReviewQuery = Depends()):    
     req_db_query = reviews_controller.get_all_review(db, query_params=query_params)
