@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends
-from schemas.vehicles_schema import VehicleBase, VehicleDisplay, VehicleImageDisplay, VehicleQuery
+from fastapi import APIRouter, Depends, status
+from schemas.vehicles_schema import VehicleBase, VehicleDisplay, VehicleQuery
 from schemas.users_schema import UserBase
 from sqlalchemy.orm import Session
 from db.database import get_db
