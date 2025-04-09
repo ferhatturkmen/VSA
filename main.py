@@ -17,7 +17,7 @@ app.include_router(files_router.router)
 app.include_router(bookings_router.router)
 app.include_router(payments_router.router)
 app.include_router(reviews_router.router)
-app.include_router(properties_router.router)
+#app.include_router(properties_router.router)
 models.Base.metadata.create_all(engine)
 
 

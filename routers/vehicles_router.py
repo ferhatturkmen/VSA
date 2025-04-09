@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends
-from schemas.vehicles_schema import VehicleBase, VehicleDisplay, VehicleImageDisplay, VehicleQuery
+from fastapi import APIRouter, Depends, status
+from schemas.vehicles_schema import VehicleBase, VehicleDisplay, VehicleQuery
 from sqlalchemy.orm import Session
 from db.database import get_db
 from controllers import vehicles_controller
@@ -12,7 +12,7 @@ router = APIRouter(
     
 
 #create a new vehicle
-@router.post("/new", response_model=VehicleDisplay)
+@router.post("/new", response_model=VehicleDisplay, status_code=status.HTTP_201_CREATED)
 def create_vehicle(request:VehicleBase, db : Session = Depends(get_db)):
     return vehicles_controller.create_vehicle(db, request)
 
