@@ -1,12 +1,11 @@
 from pydantic import BaseModel
-from typing import Optional , List
+from typing import Optional #, List
 
 
-class VehicleImageDisplay(BaseModel):
-    image_id: int
-    filename: Optional[str]
-    image_url: Optional[str]
-    vehicle_id: int #don't forget to delete Optional
+class VehicleFileDisplay(BaseModel):
+    file_id: int
+    file_url: Optional[str]
+    vehicle_id: int 
    
 
     class Config():
