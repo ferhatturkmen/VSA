@@ -1,8 +1,9 @@
 from sqlalchemy.orm import Session
 from db.models import db_vehicle, db_vehicle_files
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, UploadFile, File
 import os
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
+from typing import List
 
 
 
@@ -21,7 +22,7 @@ def allowed_file(filename: str) -> bool:
     extension = os.path.splitext(filename)[1].lower() 
     return extension in ALLOWED_EXTENSIONS
 
-def upload_vehicle_file(db: Session, vehicle_id: int, files: list):
+def upload_vehicle_file(db: Session, vehicle_id: int, files: list[UploadFile]):
     req_vehicle = db.query(db_vehicle).filter(db_vehicle.vehicle_id == vehicle_id).first()
     if not req_vehicle:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
@@ -69,7 +70,7 @@ def upload_vehicle_file(db: Session, vehicle_id: int, files: list):
     return JSONResponse(
         status_code=201,
         content={
-            "message": "File(s) uploaded successfully!",
+            "message": "File uploaded successfully!",
             "file_paths": file_paths
         }
     )
@@ -104,7 +105,7 @@ def upload_vehicle_file(db: Session, vehicle_id: int, files: list):
 
 
 def get_files_by_car(db: Session, vehicle_id: int):
-    
+        
     car = db.query(db_vehicle).filter(db_vehicle.vehicle_id == vehicle_id).first()
     if not car:
         raise HTTPException(status_code=404, detail=f"Vehicle with id {vehicle_id} not found")
@@ -120,22 +121,19 @@ def get_files_by_car(db: Session, vehicle_id: int):
 
 
 
-
-
 #delete file from a vehicle
 
+
 def delete_file(db: Session, file_id:int):
-  file_to_delete = db.query(db_vehicle_files).filter(db_vehicle_files.file_id == file_id).first()
-  if not file_to_delete:
-      raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                          detail=f"File with id {file_id} not found")
-        
-  db.delete(file_to_delete)
-  db.commit()
-  return JSONResponse(
-        status_code=status.HTTP_204_DELETED,  
-        content={"message": "File deleted successfully!"}
-    )
+   file_to_delete = db.query(db_vehicle_files).filter(db_vehicle_files.file_id == file_id).first()
+   if not file_to_delete:
+       raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                           detail=f"File with id {file_id} not found")
+       
+   db.delete(file_to_delete)
+   db.commit()
+   return Response(status_code=status.HTTP_204_NO_CONTENT)
+
 
 
 
