@@ -18,12 +18,13 @@ class VehicleBase(BaseModel):
     year: str
     fuel_type: VehicleFuelType
     total_person: int
-    is_commercial: bool
-    room_size: float
+    is_commercial: bool    
     is_automatic: bool
     navigation: bool
     air_condition: bool
     include_listing: bool
+    daily_rate: float
+    location: str
     owner_id: int
 
 class VehicleQuery(BaseModel):
@@ -34,11 +35,12 @@ class VehicleQuery(BaseModel):
     fuel_type: Optional[VehicleFuelType] = None
     total_person: Optional[int] = None  
     is_commercial: Optional[bool] = None  
-    room_size: Optional[float] = None
     is_automatic: Optional[bool] = None
     navigation: Optional[bool] = None
     air_condition: Optional[bool] = None
     include_listing: Optional[bool] = None
+    daily_rate: Optional[float] = None
+    location: Optional[str] = None
     owner_id: Optional[int] = None
 
 
@@ -49,14 +51,15 @@ class VehicleDisplay(BaseModel):
     brand: str
     model: str
     year: str
-    fuel_type: str
+    fuel_type: VehicleFuelType
     total_person: int  
     is_commercial: bool  
-    room_size: float
     is_automatic: bool
     navigation: bool
     air_condition: bool
     include_listing: bool
+    daily_rate: float
+    location: str
     owner_id: int
     vehicle_images: List[VehicleFileDisplay] = []
     class Config():
