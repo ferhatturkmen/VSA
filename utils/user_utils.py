@@ -1,15 +1,31 @@
-from schemas.users_schema import UserBase
-from fastapi import HTTPException
-from db.models import db_vehicle
+from schemas.users_schema import UserBase, CurrentUserDisplay
+from fastapi import HTTPException, status
+from db.models import db_vehicle, db_booking
 from sqlalchemy.orm import Session
+
+
 
 # Function to check if the user is authorized to access user endpoints
 def check_user(user_id:int, current_user:UserBase):
   if user_id != current_user.user_id:
-       raise HTTPException(status_code=403, detail="You are not authorized to access this user.")
+       raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You are not authorized to access this user.")
 
 # Function to check if the user is authorized to access vehicle endpoints
 def check_owner(vehicle_id:int, current_user:UserBase, db : Session):
   req_vehicle = db.query(db_vehicle).filter(db_vehicle.vehicle_id == vehicle_id).first()
   if req_vehicle.owner_id != current_user.user_id:
-       raise HTTPException(status_code=403, detail="You are not authorized to access this vehicle.")
+       raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You are not authorized to access this vehicle.")
+
+# Function to check if the user is authorized to access booking endpoints
+def check_booker(booking_id: int, current_user: CurrentUserDisplay, db: Session):
+    #print("Booking ID:", booking_id)
+    req_booking = db.query(db_booking).filter(db_booking.booking_id == booking_id).first()
+    #print("req booking is", req_booking.__dict__)
+    req_vehicle = db.query(db_vehicle).filter(db_vehicle.vehicle_id == req_booking.rented_vehicle_id).first()
+    #print("req vehicle is", req_vehicle.__dict__)
+    if req_booking.renter_id != current_user.user_id and req_vehicle.owner_id != current_user.user_id:
+        print(req_booking.renter_id != current_user.user_id)
+        print(req_vehicle.owner_id != current_user.user_id)
+        print(req_booking.renter_id ,req_vehicle.owner_id)
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You are not authorized to access this booking.")      
+    

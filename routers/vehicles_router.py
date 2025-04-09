@@ -10,13 +10,13 @@ from auth.oauth2 import get_current_user
 from utils.user_utils import check_owner  
 
 router = APIRouter(
-    prefix = "/vehicles",
-    tags = ["vehicles"]
+    prefix = "/vehicle",
+    tags = ["vehicle"]
 )
     
 
 #create a new vehicle
-@router.post("/new", response_model=VehicleDisplay)
+@router.post("/", response_model=VehicleDisplay)
 def create_vehicle(request:VehicleBase, 
                    current_user:UserBase=Depends(get_current_user), 
                    db : Session = Depends(get_db)):
