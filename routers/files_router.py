@@ -32,7 +32,7 @@ def get_file(vehicle_id:int, db:Session=Depends(get_db)):
 
 
 
-#delete vehicle image
-@router.delete("/{vehicle_id}/delete_images")
-def delete_vehicle_image(image_id:int, current_user:UserBase=Depends(get_current_user), db: Session = Depends(get_db)):
-  return files_controller.delete_image(db, image_id)
+#delete vehicle file
+@router.delete("/{vehicle_id}/delete")
+def delete_file(file_id:int, current_user:UserBase=Depends(get_current_user), db: Session = Depends(get_db)):
+  return files_controller.delete_file(db, file_id)
