@@ -39,7 +39,7 @@ def get_user(user_id:int,
     return users_controller.get_user(db, user_id)
 
 #update a user by id 
-@router.put("/{user_id}/update", response_model=UserDisplay)
+@router.put("/{user_id}", response_model=UserDisplay)
 def update_user(user_id:int, 
                 request:UserUpdateQuery, 
                 current_user:UserBase=Depends(get_current_user), 
@@ -48,7 +48,7 @@ def update_user(user_id:int,
     return users_controller.update_user(db, user_id, request, current_user)
 
 #delete a user by id 
-@router.delete("/{user_id}/delete")
+@router.delete("/{user_id}")
 def delete_user(user_id:int, 
                 current_user:UserBase=Depends(get_current_user), 
                 db:Session=Depends(get_db)):    

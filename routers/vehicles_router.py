@@ -39,7 +39,7 @@ def get_vehicle(vehicle_id:int,
 
 
 #update a vehicle by id                     #request changed to VehicleQuery 
-@router.put("/{vehicle_id}/update", response_model=VehicleDisplay)
+@router.put("/{vehicle_id}", response_model=VehicleDisplay)
 def update_vehicle(vehicle_id:int, 
                    request:VehicleQuery, 
                    current_user:UserBase=Depends(get_current_user), 
@@ -48,7 +48,7 @@ def update_vehicle(vehicle_id:int,
     return vehicles_controller.update_vehicle(db, vehicle_id, request)
 
 #delete a vehicle by id 
-@router.delete("/{vehicle_id}/delete")
+@router.delete("/{vehicle_id}")
 def delete_vehicle(vehicle_id:int, 
                    current_user:UserBase=Depends(get_current_user), 
                    db:Session=Depends(get_db)):

@@ -41,7 +41,7 @@ def get_review(review_id:int,
 
 
 #update a review by id 
-@router.put("/{review_id}/update", response_model=ReviewDisplay)
+@router.put("/{review_id}", response_model=ReviewDisplay)
 def update_review(review_id:int, 
                   request:ReviewQuery, 
                   current_user:UserBase=Depends(get_current_user), 
@@ -50,7 +50,7 @@ def update_review(review_id:int,
     return reviews_controller.update_review(db, review_id, request)
 
 #delete a review by id 
-@router.delete("/{review_id}/delete")
+@router.delete("/{review_id}")
 def delete_review(review_id:int, 
                   current_user:UserBase=Depends(get_current_user), 
                   db:Session=Depends(get_db)):

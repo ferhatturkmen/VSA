@@ -107,13 +107,20 @@ def update_user(db:Session, user_id:int, request:UserUpdateQuery, current_user:C
         if not req_user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
             detail=f'Requested user with id {user_id} is not found')
+        req_user_email = db.query(DbUser).filter(DbUser.e_mail == request.e_mail).first()
         
         if request.name is not None:
             req_user.name = request.name
         if request.surname is not None:
             req_user.surname = request.surname
-        if request.e_mail is not None:
+        if request.e_mail is not None and request.e_mail != req_user.e_mail :
+            if req_user_email:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                                detail=f"Email address {request.e_mail} is in use by another user")
             req_user.e_mail = request.e_mail
+        else:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                                detail=f"You are trying to change your email address to the same one")
         if request.password is not None:
             req_user.password = Hash.bcrypt(request.password)
      #   if request.is_owner is not None:

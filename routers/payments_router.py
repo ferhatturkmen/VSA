@@ -43,7 +43,7 @@ def get_payment(payment_id:int,
     return payments_controller.get_payment(db, payment_id)
 
 #update a payment by id 
-@router.put("/{payment_id}/update", response_model=PaymentDisplay)
+@router.put("/{payment_id}", response_model=PaymentDisplay)
 def update_payment(payment_id:int, 
                    request:PaymentBase, 
                    current_user:UserBase=Depends(get_current_user),  
@@ -52,7 +52,7 @@ def update_payment(payment_id:int,
     return payments_controller.update_payment(db, payment_id, request)
 
 #delete a payment by id 
-@router.delete("/{payment_id}/delete")
+@router.delete("/{payment_id}")
 def delete_payment(payment_id:int, 
                    current_user:UserBase=Depends(get_current_user),  
                    db:Session=Depends(get_db)):
