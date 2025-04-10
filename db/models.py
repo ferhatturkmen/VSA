@@ -12,8 +12,8 @@ class DbUser(Base) :
     e_mail = Column(String, unique=True, index=True)
     password = Column(String)
     is_owner = Column(Boolean, default=False)
-    licence_type = Column(String)
-    licence_date = Column(String)
+    licence_type = Column(Enum("A", "B", "C", "D", "E"), nullable=False)
+    licence_date = Column(Date)
     is_admin = Column(Boolean, default=False)
     owned_vehicles= relationship("db_vehicle", back_populates="owner")
     rented_bookings = relationship("db_booking", foreign_keys="[db_booking.renter_id]", back_populates="renter")     
@@ -53,8 +53,8 @@ class db_vehicle_files(Base) :
 class db_booking(Base) :
     __tablename__ = "bookings"
     booking_id =Column(Integer, primary_key=True, index=True)
-    start_date_time = Column(DateTime, nullable=False)
-    end_date_time = Column(DateTime, nullable=False)   
+    start_date = Column(Date, nullable=False)
+    end_date = Column(Date, nullable=False)   
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
     is_delivered_up = Column(Boolean, default = False)
     damage_report = Column(String)
