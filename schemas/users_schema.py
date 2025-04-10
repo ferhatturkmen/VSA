@@ -44,7 +44,7 @@ class UserUpdateQuery(BaseModel):
     surname: Optional[str] = None
     e_mail: Optional[EmailStr] = None
     password: Optional[str] = None
-    is_owner: Optional[bool] = None
+   # is_owner: Optional[bool] = None
     licence_type: Optional[LicenceType] = None
     licence_date: Optional[date] = None
     is_admin: Optional[bool]

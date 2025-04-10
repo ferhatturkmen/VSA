@@ -21,17 +21,15 @@ def create_user(request: UserCreate,
     return users_controller.create_user(db, request)
 
 #read all users
-@router.get("/",)
+@router.get("/", response_model=List[UserDisplay])
 def get_all_users(db: Session = Depends(get_db), 
                   current_user:UserBase=Depends(get_current_user), 
                   query_params: UserQuery =  Depends()):
     check_admin(current_user)
     req_db_query = users_controller.get_all_users(db, query_params=query_params)
-    return {
-        "data": req_db_query,
-        "current_user": current_user
-    }
-
+    return  req_db_query
+       
+    
 #read user by id 
 @router.get("/{user_id}", response_model=UserDisplay)
 def get_user(user_id:int, 
@@ -47,7 +45,7 @@ def update_user(user_id:int,
                 current_user:UserBase=Depends(get_current_user), 
                 db:Session=Depends(get_db)):
     check_user(user_id, current_user)
-    return users_controller.update_user(db, user_id, request)
+    return users_controller.update_user(db, user_id, request, current_user)
 
 #delete a user by id 
 @router.delete("/{user_id}/delete")

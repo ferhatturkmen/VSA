@@ -160,7 +160,8 @@ def delete_vehicle(db:Session, vehicle_id:int):
                                 detail=f"Requested vehicle with id {vehicle_id } is not found")
         db.delete(req_vehicle)
         db.commit()
-        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT)
+        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT,
+                            content={})
     except HTTPException as e:
         raise e
     except Exception as e:

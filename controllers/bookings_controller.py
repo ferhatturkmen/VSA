@@ -167,7 +167,8 @@ def delete_booking(db: Session, booking_id: int, ):
                                 detail=f"Requested booking with id {booking_id} is not found.")
         db.delete(req_booking)
         db.commit()
-        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT)
+        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT,
+                            content={})
     except HTTPException as e:
         raise e
     except Exception as e:   

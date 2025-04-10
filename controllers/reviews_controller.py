@@ -106,7 +106,8 @@ def delete_review(db:Session, review_id:int):
         else:
             db.delete(req_review)
             db.commit()
-        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT) 
+        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT,
+                            content={}) 
     
     except HTTPException as e:
         raise e

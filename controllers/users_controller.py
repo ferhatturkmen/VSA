@@ -1,10 +1,11 @@
 from sqlalchemy.orm.session import Session
-from schemas.users_schema import UserBase, UserQuery, UserCreate
+from schemas.users_schema import UserBase, UserQuery, UserCreate, UserUpdateQuery, CurrentUserDisplay
 from db.models import DbUser
 from db.hash import Hash
 from fastapi import HTTPException, status
 from typing import Optional, List
 from fastapi.responses import JSONResponse
+
 
 
 def create_user (db:Session, 
@@ -100,27 +101,32 @@ def get_user_by_email(db:Session, e_mail:str ):
             detail="Exception occured while getting user"
         )
 
-def update_user(db:Session, user_id:int, request:UserQuery):
+def update_user(db:Session, user_id:int, request:UserUpdateQuery, current_user:CurrentUserDisplay):
     try:
         req_user= db.query(DbUser).filter(DbUser.user_id == user_id).first()
         if not req_user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
             detail=f'Requested user with id {user_id} is not found')
+        
+        if request.name is not None:
+            req_user.name = request.name
+        if request.surname is not None:
+            req_user.surname = request.surname
+        if request.e_mail is not None:
+            req_user.e_mail = request.e_mail
+        if request.password is not None:
+            req_user.password = Hash.bcrypt(request.password)
+     #   if request.is_owner is not None:
+      #      req_user.is_owner = request.is_owner
+        if request.licence_type is not None:
+            req_user.licence_type = request.licence_type
+        if request.licence_date is not None:
+            req_user.licence_date = request.licence_date
+        if request.is_admin is not None and current_user.is_admin:
+            req_user.is_admin = request.is_admin  
         else:
-            if request.name is not None:
-                req_user.name = request.name
-            if request.surname is not None:
-                req_user.surname = request.surname
-            if request.e_mail is not None:
-                req_user.e_mail = request.e_mail
-            if request.password is not None:
-                req_user.password = Hash.bcrypt(request.password)
-            if request.is_owner is not None:
-                req_user.is_owner = request.is_owner
-            if request.licence_type is not None:
-                req_user.licence_type = request.licence_type
-            if request.licence_date is not None:
-                req_user.licence_date = request.licence_date    
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                                detail="You are not authorized to update user admin status")  
         db.commit()
         db.refresh(req_user)
         return req_user
@@ -138,20 +144,22 @@ def update_user(db:Session, user_id:int, request:UserQuery):
 def delete_user(db:Session, user_id:int):
     try:
         req_user = db.query(DbUser).filter(DbUser.user_id == user_id).first()
+        print (req_user.__dict__)
         if not req_user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
             detail=f'Requested user with id {user_id} is not found')
-        else:
-            db.delete(req_user)
-            db.commit()
-        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT)
+        
+        db.delete(req_user)
+        db.commit()
+        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT,
+                            content={})
     
-    except HTTPException as e:
+    except HTTPException as e:        
         raise e
     except Exception as e:        
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Exception occured while deleting user"
+            detail=f"Exception occured while deleting user"
         )
 
      

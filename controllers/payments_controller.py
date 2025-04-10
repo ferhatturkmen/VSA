@@ -108,7 +108,8 @@ def delete_payment(db:Session, payment_id:int):
             detail=f'Requested payment with id {payment_id} is not found')
         db.delete(req_payment)
         db.commit()
-        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT) 
+        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT,
+                            content={}) 
     
     except HTTPException as e:
         raise e
