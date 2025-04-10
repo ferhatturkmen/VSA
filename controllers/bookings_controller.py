@@ -45,7 +45,7 @@ def create_booking(db: Session,
         db.rollback() 
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"{e}Exception occured while creating booking "
+            detail="Exception occured while creating booking "
         )
 
 
