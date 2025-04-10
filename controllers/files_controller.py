@@ -21,6 +21,12 @@ def allowed_file(filename: str) -> bool:
     extension = os.path.splitext(filename)[1].lower() 
     return extension in ALLOWED_EXTENSIONS
 
+def upload_vehicle_file(db: Session, vehicle_id: int, files: list[UploadFile]):
+    try:
+        req_vehicle = db.query(db_vehicle).filter(db_vehicle.vehicle_id == vehicle_id).first()
+        if not req_vehicle:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
+                                detail=f"Vehicle with id {vehicle_id} not found")
 def upload_vehicle_file(db: Session, vehicle_id: int, file: UploadFile):
     req_vehicle = db.query(db_vehicle).filter(db_vehicle.vehicle_id == vehicle_id).first()
     if not req_vehicle:
@@ -168,16 +174,24 @@ def upload_vehicle_file(db: Session, vehicle_id: int, file: UploadFile):
 #get all files related with vehicle
 
 def get_files_by_car(db: Session, vehicle_id: int):
-        
-    car = db.query(db_vehicle).filter(db_vehicle.vehicle_id == vehicle_id).first()
-    if not car:
-        raise HTTPException(status_code=404, detail=f"Vehicle with id {vehicle_id} not found")
+    try:    
+        car = db.query(db_vehicle).filter(db_vehicle.vehicle_id == vehicle_id).first()
+        if not car:
+            raise HTTPException(status_code=404, detail=f"Vehicle with id {vehicle_id} not found")
 
-    images = db.query(db_vehicle_files).filter(db_vehicle_files.vehicle_id == vehicle_id).all()
-    if not images:
-        raise HTTPException(status_code=404, detail=f"No files found for vehicle with id {vehicle_id}")
+        images = db.query(db_vehicle_files).filter(db_vehicle_files.vehicle_id == vehicle_id).all()
+        if not images:
+            raise HTTPException(status_code=404, detail=f"No files found for vehicle with id {vehicle_id}")
 
-    return images
+        return 
+    
+    except HTTPException as e:
+        raise e
+    except Exception as e: 
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Exception occured while getting image"
+        )
 
 
 
@@ -187,14 +201,22 @@ def get_files_by_car(db: Session, vehicle_id: int):
 #delete file from a vehicle
 
 def delete_file(db: Session, file_id:int):
-   file_to_delete = db.query(db_vehicle_files).filter(db_vehicle_files.file_id == file_id).first()
-   if not file_to_delete:
-       raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                           detail=f"File with id {file_id} not found")
-       
-   db.delete(file_to_delete)
-   db.commit()
-   return Response(status_code=status.HTTP_204_NO_CONTENT)
+    try:
+        file_to_delete = db.query(db_vehicle_files).filter(db_vehicle_files.file_id == file_id).first()
+        if not file_to_delete:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail=f"File with id {file_id} not found")
+            
+        db.delete(file_to_delete)
+        db.commit()
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
+    except HTTPException as e:
+        raise e
+    except Exception as e:        
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Exception occured while deleting image"
+        )
 
 
 

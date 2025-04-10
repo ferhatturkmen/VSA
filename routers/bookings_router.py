@@ -7,11 +7,11 @@ from auth.oauth2 import get_current_user
 from schemas.users_schema import UserBase
 from schemas.bookings_schema import BookingBase, BookingDisplay, BookingQuery
 from controllers import bookings_controller
-from utils.user_utils import check_booker
+from utils.user_utils import check_booker, check_admin
 
 router = APIRouter(
-    prefix="/booking",
-    tags=["booking"]
+    prefix="/bookings",
+    tags=["bookings"]
 )
 
 
@@ -29,6 +29,7 @@ def get_all_bookings(db: Session = Depends(get_db),
                      current_user: UserBase = Depends(get_current_user),
                      query_params: BookingQuery = Depends(),
                      ):
+    check_admin(current_user)
     req_db_query = bookings_controller.get_all_bookings(db, query_params=query_params)
     return req_db_query
         

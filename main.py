@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import bookings_router, payments_router, reviews_router, users_router, vehicles_router, files_router, properties_router
+from routers import bookings_router, payments_router, reviews_router, users_router, vehicles_router, files_router
 from auth import authentication
 from db import models
 from db.database import engine
