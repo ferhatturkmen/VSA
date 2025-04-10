@@ -11,9 +11,6 @@ from typing import List
 UPLOAD_FOLDER = r".\files" 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-
-
-
 #check if file has allowed extension
 ALLOWED_EXTENSIONS = {'.jpg', '.jpeg', '.jfif', '.pjpeg', '.pjp', '.png'}
 
