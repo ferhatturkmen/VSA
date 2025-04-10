@@ -1,16 +1,19 @@
 from sqlalchemy.orm.session import Session
-from schemas.vehicles_schema import VehicleBase, VehicleQuery
+from schemas.vehicles_schema import VehicleBase, VehicleQuery, VehicleCreate
+from schemas.users_schema import CurrentUserDisplay
 from db.models import db_vehicle
 from fastapi import HTTPException, status, Query
 from typing import List, Optional
 from fastapi.responses import JSONResponse
 
 
-def create_vehicle (db:Session, request: VehicleBase ): 
+def create_vehicle (db:Session, 
+                    request: VehicleCreate,
+                     current_user: CurrentUserDisplay ): 
     try:
         existing_vehicle = db.query(db_vehicle).filter(db_vehicle.plate == request.plate).first()
         if existing_vehicle:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                                 detail=f"A vehicle with the plate {request.plate} already exists.")
         new_vehicle = db_vehicle(
             plate = request.plate,
@@ -26,7 +29,7 @@ def create_vehicle (db:Session, request: VehicleBase ):
             include_listing = request.include_listing,
             daily_rate = request.daily_rate,
             location = request.location,
-            owner_id = request.owner_id
+            owner_id = current_user.user_id
         )
         db.add(new_vehicle)
         db.commit()

@@ -32,9 +32,8 @@ def create_booking(db: Session,
         db.refresh(new_booking)    
         return JSONResponse(
             status_code=status.HTTP_201_CREATED,
-            content={"message": f"Booking with id {new_booking.booking_id} is created",
-                     "booking_id": new_booking.booking_id,
-                     "start_date": new_booking.start_date,
+            content={"message": f"Booking is created",
+                     "booking_id": new_booking.booking_id,                     
                      "rented_vehicle_id": new_booking.rented_vehicle_id,
                      "renter_id": new_booking.renter_id,}
         )
@@ -46,7 +45,7 @@ def create_booking(db: Session,
         db.rollback() 
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Exception occured while creating booking"
+            detail=f"{e}Exception occured while creating booking "
         )
 
 

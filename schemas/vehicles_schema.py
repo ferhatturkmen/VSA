@@ -10,6 +10,21 @@ class VehicleFuelType(str, Enum):
     hybrid = "Hybrid"
     lpg = "LPG"
     
+
+class VehicleCreate(BaseModel):
+    plate: str
+    brand: str    
+    model: str
+    year: str
+    fuel_type: VehicleFuelType
+    total_person: int  
+    is_commercial: bool  
+    is_automatic: bool
+    navigation: bool
+    air_condition: bool
+    include_listing: bool
+    daily_rate: float
+    location: str
     
 class VehicleBase(BaseModel):
     plate: str

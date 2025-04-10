@@ -35,6 +35,11 @@ class BookingDisplay(BaseModel):
     cancelled_at:Optional[datetime]
     class Config:
         from_attributes = True
+        json_encoders = {
+            date: lambda v: v.isoformat(),
+            datetime: lambda v: v.isoformat()
+        }
+
 
 class BookingQuery(BaseModel):
     booking_id: Optional[int] = None
