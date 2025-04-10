@@ -144,7 +144,7 @@ def update_user(db:Session, user_id:int, request:UserUpdateQuery, current_user:C
 def delete_user(db:Session, user_id:int):
     try:
         req_user = db.query(DbUser).filter(DbUser.user_id == user_id).first()
-        print (req_user.__dict__)
+        
         if not req_user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
             detail=f'Requested user with id {user_id} is not found')

@@ -51,8 +51,8 @@ def update_user(user_id:int,
 @router.delete("/{user_id}/delete")
 def delete_user(user_id:int, 
                 current_user:UserBase=Depends(get_current_user), 
-                db:Session=Depends(get_db)):
-    check_user(user_id, current_user)
+                db:Session=Depends(get_db)):    
+    check_user(user_id, current_user)    
     return users_controller.delete_user(db, user_id)
 
 
