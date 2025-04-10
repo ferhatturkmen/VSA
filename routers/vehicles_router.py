@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, status
-from schemas.vehicles_schema import VehicleBase, VehicleDisplay, VehicleQuery
+from schemas.vehicles_schema import VehicleBase, VehicleDisplay, VehicleQuery, VehicleCreate
 from schemas.users_schema import UserBase
 from sqlalchemy.orm import Session
 from db.database import get_db
@@ -17,10 +17,10 @@ router = APIRouter(
 
 #create a new vehicle
 @router.post("/", response_model=VehicleDisplay)
-def create_vehicle(request:VehicleBase, 
+def create_vehicle(request:VehicleCreate, 
                    current_user:UserBase=Depends(get_current_user), 
                    db : Session = Depends(get_db)):
-    return vehicles_controller.create_vehicle(db, request)
+    return vehicles_controller.create_vehicle(db, request, current_user)
 
 #read all vehicles
 @router.get("/", response_model=List[VehicleDisplay])
